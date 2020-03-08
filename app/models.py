@@ -31,7 +31,7 @@ class User(UserMixin, db.Model):
         
         return user
     
-class Review(db.model):
+class Review(db.Model):
     """
     Code Review Request Model
     Attributes:
