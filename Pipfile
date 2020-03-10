@@ -16,6 +16,8 @@ requests = "*"
 flask-sqlalchemy = "*"
 flask-migrate = "*"
 flask-sslify = "*"
+flask-wtf = "*"
+pytz = "*"
 
 [requires]
 python_version = "3.8"

@@ -10,6 +10,7 @@ from flask_login import (
     logout_user,
 )
 from app.models import User
+from app.forms import CreateForm
 from app import db, login_manager
 #from app import app
 
@@ -137,6 +138,11 @@ def callback():
 def logout():
     logout_user()
     return redirect(url_for("index"))
+
+@app.route("/requestor")
+def requestor():
+    form = CreateForm
+    return render_template('requestor.html, form=form')
 
 def get_google_provider_cfg():
     return requests.get(GOOGLE_DISCOVERY_URL).json()
