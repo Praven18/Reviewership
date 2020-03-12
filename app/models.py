@@ -50,7 +50,7 @@ class Review(db.Model):
 
     """   
 
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, index=True, unique=True,primary_key=True)
     title = db.Column(db.String)
     description = db.Column(db.String)
     biling = db.Column(db.String)

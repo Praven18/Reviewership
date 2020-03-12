@@ -9,7 +9,7 @@ from flask_login import (
     login_user,
     logout_user,
 )
-from app.models import User
+from app.models import User, Review
 from app.forms import CreateForm
 from app import db, login_manager
 #from app import app
@@ -40,17 +40,25 @@ def load_user(user_id):
 @app.route("/")
 def index():
     if current_user.is_authenticated:
-        return (
-            "<p>Hello, {}! You're logged in! Email: {}</p>"
-            "<div><p>Google Profile Picture:</p>"
-            '<img src="{}" alt="Google profile pic"></img></div>'
-            '<a class="button" href="/logout">Logout</a>'.format(
-                current_user.first_name, current_user.email, current_user.profile_pic
-            )
-        )
-    else:
-        return '<a class="button" href="/login">Google Login</a>'
+        #return (
 
+
+        return render_template('index.html')
+            #"<p>Hello, {}! You're logged in! Email: {}</p>"
+            #"<div><p>Google Profile Picture:</p>"
+            #'<img src="{}" alt="Google profile pic"></img></div>'
+            #'<a class="button" href="/logout">Logout</a>'.format(
+            #    current_user.first_name, current_user.email, current_user.profile_pic
+            #)
+        #)
+    else:
+        return render_template('index.html')
+        #return '<a class="button" href="/login">Google Login</a>'
+
+@app.route("/home")
+def home():
+    user = {'first_name': current_user.first_name, 'email': current_user.email, 'profile_pic': current_user.profile_pic}
+    return render_template('home.html', user=user)
 
 @app.route("/login")
 def login():
@@ -130,7 +138,8 @@ def callback():
     login_user(user)
 
     # Send user back to homepage
-    return redirect(url_for("app.index"))
+
+    return redirect(url_for("app.home"))
 
 
 @app.route("/logout")
@@ -139,10 +148,17 @@ def logout():
     logout_user()
     return redirect(url_for("index"))
 
-@app.route("/requestor")
+@app.route("/requestor", methods=['GET', 'POST'])
 def requestor():
-    form = CreateForm
-    return render_template('requestor.html, form=form')
+    form = CreateForm()
+    if form.validate_on_submit():
+        print('tea')
+    else:
+        review = Review(title=form.title.data, description=form.description.data, biling=form.biling.data, status = 1, requestor = current_user.id)
+        db.session.add(review)
+        db.session.commit()
+        
+    return render_template('requestor.html', form=form)
 
 def get_google_provider_cfg():
     return requests.get(GOOGLE_DISCOVERY_URL).json()
