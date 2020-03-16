@@ -1,4 +1,4 @@
-from flask import redirect, request, render_template, Blueprint, url_for
+from flask import redirect, request, render_template, Blueprint, url_for, flash
 import requests
 import json
 from oauthlib.oauth2 import WebApplicationClient
@@ -152,13 +152,24 @@ def logout():
 def requestor():
     form = CreateForm()
     if form.validate_on_submit():
-        print('tea')
-    else:
+        full_name = current_user.first_name + ' ' + current_user.last_name
         review = Review(title=form.title.data, description=form.description.data, biling=form.biling.data, status = 1, requestor = current_user.id)
         db.session.add(review)
         db.session.commit()
+    else:
+        print('bad')
         
     return render_template('requestor.html', form=form)
+
+@app.route("/reviewer", methods=['GET', 'POST'])
+def reviewer():
+    #reviews = db.session.query(Review).order_by(Review.id).all()
+    reviews = Review.query.order_by(Review.id).all()
+    print('####################') 
+    print(reviews)
+    print('###################')
+    print('####################')
+    return render_template('reviewer.html', reviews=reviews)
 
 def get_google_provider_cfg():
     return requests.get(GOOGLE_DISCOVERY_URL).json()

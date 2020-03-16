@@ -1,11 +1,14 @@
 <html>
     <head>
-        <title>Reviewership</title>
+        {% block head %}
+        <title>{%block title %}{% endblock%} Reviewership</title>
+        {% endblock %}
     </head>
     <body>
         <div>
             <a href="{{ url_for('app.index')}}">Home</a>  
             <a href="{{ url_for('app.requestor')}}">Requestor</a>
+            <a href="{{ url_for('app.reviewer')}}">Reviewer</a>
         </div>
         <hr>
         {% block content %}{% endblock %}

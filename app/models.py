@@ -31,6 +31,10 @@ class User(UserMixin, db.Model):
             print(user)
         
         return user
+
+    def get_name(uid):
+        get(uid)
+        return user.first_name + ' ' + user.last_name
     
 class Review(db.Model):
     """
@@ -58,3 +62,6 @@ class Review(db.Model):
     date = db.Column(db.DateTime, default=datetime.utcnow)
     requestor = db.Column(db.String, nullable=True)
     reviewer = db.Column(db.String, nullable=True)
+
+    def __repr__(self):
+        return '<User {}>'.format([self.id,self.title,self.description,self.biling,self.status,self.date,self.requestor,self.reviewer])
