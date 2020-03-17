@@ -33,7 +33,7 @@ class User(UserMixin, db.Model):
         return user
 
     def get_name(uid):
-        get(uid)
+        user = User.get(uid)
         return user.first_name + ' ' + user.last_name
     
 class Review(db.Model):
