@@ -1,4 +1,5 @@
 from flask import redirect, request, render_template, Blueprint, url_for, flash
+from flask_bootstrap import Bootstrap
 import requests
 import json
 from oauthlib.oauth2 import WebApplicationClient
@@ -16,6 +17,7 @@ from app import db, login_manager
 
 
 app = Blueprint('app', __name__)
+
 GOOGLE_CLIENT_ID ='856122308427-29ccsisqdr637u58u4k2dmoo5aom68df.apps.googleusercontent.com'
 GOOGLE_CLIENT_SECRET = 'YjwznTE9_1qaccXUFxiUO4L2'
 GOOGLE_DISCOVERY_URL = (
@@ -152,10 +154,10 @@ def logout():
 def requestor():
     form = CreateForm()
     if form.validate_on_submit():
-        full_name = current_user.first_name + ' ' + current_user.last_name
-        review = Review(title=form.title.data, description=form.description.data, biling=form.biling.data, status = 1, requestor = current_user.id)
-        db.session.add(review)
-        db.session.commit()
+        review = Review(title=form.title.data, description=form.description.data, biling=form.biling.data, status = 1, requestor = current_user.id, requestor_name=User.get_name(current_user.id), date= form.date.value)
+        #db.session.add(review)
+        #db.session.commit()
+        print('good')
     else:
         print('bad')
         

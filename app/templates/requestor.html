@@ -1,8 +1,17 @@
 {% extends "base.html" %}
 
+
+{% block head %}
+{{ super() }}
+<link type="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/css/bootstrap-datetimepicker.min.css">
+{% endblock %}
+
 {% block content %}
     <h1> Make a review</h1>
+    <div class = "container"><div class= "row">
+
     <form action="" method="post" novalidate>
+        <div class = "col-sm-4">
         {{ form.hidden_tag() }}
         <p>
             {{form.title.label}}<br>
@@ -16,6 +25,25 @@
             {{form.biling.label}}<br>
             {{form.biling}}
         </p>
+        {{form.date.label}}
+        
+            <p>
+            
+            {{form.date}}
+            </p>
+            </div>
+        </div>
+        </p>
         <p>{{ form.create() }}</p>
     </form>
+    </div>
+{% endblock %}
+
+{% block scripts %}
+    {{ super() }}
+    <script type="text/javascript">
+        $(function () {
+        $('#datepick').datetimepicker();
+    });
+  </script>
 {% endblock %}
