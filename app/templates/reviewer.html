@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block head %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='/css/reviewer.css') }}">
+{% endblock %}
+{% block content %}
+    {% for review in reviews %}
+    <div class ="card">
+        <p>{{review.title}}</p>
+        <p>{{review.requestor_name}}</p>
+    </div>
+    {% endfor%}
+{% endblock %}

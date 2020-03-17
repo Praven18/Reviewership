@@ -1,4 +1,5 @@
-from flask import redirect, request, render_template, Blueprint, url_for
+from flask import redirect, request, render_template, Blueprint, url_for, flash
+from flask_bootstrap import Bootstrap
 import requests
 import json
 from oauthlib.oauth2 import WebApplicationClient
@@ -9,12 +10,14 @@ from flask_login import (
     login_user,
     logout_user,
 )
-from app.models import User
+from app.models import User, Review
+from app.forms import CreateForm
 from app import db, login_manager
 #from app import app
 
 
 app = Blueprint('app', __name__)
+
 GOOGLE_CLIENT_ID ='856122308427-29ccsisqdr637u58u4k2dmoo5aom68df.apps.googleusercontent.com'
 GOOGLE_CLIENT_SECRET = 'YjwznTE9_1qaccXUFxiUO4L2'
 GOOGLE_DISCOVERY_URL = (
@@ -39,17 +42,25 @@ def load_user(user_id):
 @app.route("/")
 def index():
     if current_user.is_authenticated:
-        return (
-            "<p>Hello, {}! You're logged in! Email: {}</p>"
-            "<div><p>Google Profile Picture:</p>"
-            '<img src="{}" alt="Google profile pic"></img></div>'
-            '<a class="button" href="/logout">Logout</a>'.format(
-                current_user.first_name, current_user.email, current_user.profile_pic
-            )
-        )
-    else:
-        return '<a class="button" href="/login">Google Login</a>'
+        #return (
 
+
+        return render_template('index.html')
+            #"<p>Hello, {}! You're logged in! Email: {}</p>"
+            #"<div><p>Google Profile Picture:</p>"
+            #'<img src="{}" alt="Google profile pic"></img></div>'
+            #'<a class="button" href="/logout">Logout</a>'.format(
+            #    current_user.first_name, current_user.email, current_user.profile_pic
+            #)
+        #)
+    else:
+        return render_template('index.html')
+        #return '<a class="button" href="/login">Google Login</a>'
+
+@app.route("/home")
+def home():
+    user = {'first_name': current_user.first_name, 'email': current_user.email, 'profile_pic': current_user.profile_pic}
+    return render_template('home.html', user=user)
 
 @app.route("/login")
 def login():
@@ -129,7 +140,8 @@ def callback():
     login_user(user)
 
     # Send user back to homepage
-    return redirect(url_for("app.index"))
+
+    return redirect(url_for("app.home"))
 
 
 @app.route("/logout")
@@ -137,6 +149,29 @@ def callback():
 def logout():
     logout_user()
     return redirect(url_for("index"))
+
+@app.route("/requestor", methods=['GET', 'POST'])
+def requestor():
+    form = CreateForm()
+    if form.validate_on_submit():
+        review = Review(title=form.title.data, description=form.description.data, biling=form.biling.data, status = 1, requestor = current_user.id, requestor_name=User.get_name(current_user.id), date= form.date.value)
+        #db.session.add(review)
+        #db.session.commit()
+        print('good')
+    else:
+        print('bad')
+        
+    return render_template('requestor.html', form=form)
+
+@app.route("/reviewer", methods=['GET', 'POST'])
+def reviewer():
+    #reviews = db.session.query(Review).order_by(Review.id).all()
+    reviews = Review.query.order_by(Review.id).all()
+    print('####################') 
+    print(reviews)
+    print('###################')
+    print('####################')
+    return render_template('reviewer.html', reviews=reviews)
 
 def get_google_provider_cfg():
     return requests.get(GOOGLE_DISCOVERY_URL).json()
