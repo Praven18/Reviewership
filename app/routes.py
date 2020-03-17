@@ -152,10 +152,10 @@ def logout():
 def requestor():
     form = CreateForm()
     if form.validate_on_submit():
-        full_name = current_user.first_name + ' ' + current_user.last_name
-        review = Review(title=form.title.data, description=form.description.data, biling=form.biling.data, status = 1, requestor = current_user.id)
-        db.session.add(review)
-        db.session.commit()
+        review = Review(title=form.title.data, description=form.description.data, biling=form.biling.data, status = 1, requestor = current_user.id, requestor_name=User.get_name(current_user.id), date= form.date.value)
+        #db.session.add(review)
+        #db.session.commit()
+        print('good')
     else:
         print('bad')
         

@@ -49,7 +49,9 @@ class Review(db.Model):
     Description:       The description of the code review
     Biling Address:    The biling address for the code review
     RequestorID:       The id of the requestor
+    Requestor Name:    The name of the requestor
     ReviewerID:        The id of the reviewer
+    Reviewer Name:     The name of the reviewer 
 
 
     """   
@@ -59,9 +61,11 @@ class Review(db.Model):
     description = db.Column(db.String)
     biling = db.Column(db.String)
     status = db.Column(db.Integer)
-    date = db.Column(db.DateTime, default=datetime.utcnow)
+    date = db.Column(db.DateTime)
     requestor = db.Column(db.String, nullable=True)
+    requestor_name = db.Column(db.String, nullable=True)
     reviewer = db.Column(db.String, nullable=True)
+    reviewer_name = db.Column(db.String, nullable=True)
 
     def __repr__(self):
-        return '<User {}>'.format([self.id,self.title,self.description,self.biling,self.status,self.date,self.requestor,self.reviewer])
+        return '<User {}>'.format([self.id,self.title,self.description,self.biling,self.status,self.date,self.requestor,self.requestor_name,self.reviewer,self.reviewer_name])
