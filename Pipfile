@@ -18,6 +18,7 @@ flask-migrate = "*"
 flask-sslify = "*"
 flask-wtf = "*"
 pytz = "*"
+flask-bootstrap = "*"
 
 [requires]
 python_version = "3.8"

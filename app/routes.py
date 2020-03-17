@@ -1,4 +1,5 @@
 from flask import redirect, request, render_template, Blueprint, url_for, flash
+from flask_bootstrap import Bootstrap
 import requests
 import json
 from oauthlib.oauth2 import WebApplicationClient
@@ -16,6 +17,7 @@ from app import db, login_manager
 
 
 app = Blueprint('app', __name__)
+
 GOOGLE_CLIENT_ID ='856122308427-29ccsisqdr637u58u4k2dmoo5aom68df.apps.googleusercontent.com'
 GOOGLE_CLIENT_SECRET = 'YjwznTE9_1qaccXUFxiUO4L2'
 GOOGLE_DISCOVERY_URL = (
