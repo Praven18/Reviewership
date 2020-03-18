@@ -1,6 +1,42 @@
 .card {
     border-style: solid;
-    border-color: coral;
+    border-width: thin;
+    border-color: grey;
     height: 172px;
-    width: 344px;
+    font-family: 'Roboto', sans-serif;
+    background-color:  white;
+    padding: 3px;
+}
+
+p {
+    margin-left: 10px;
+}
+.title {
+    font-size: 20px;
+    font-weight: bold;
+    letter-spacing: .015px;
+    margin-bottom: 5px;
+}
+
+.name {
+    font-size: 10px
+}
+
+.date {
+    font-size: 14px;
+}
+
+.main_content {
+    background-color: violet;
+}
+
+.side_content {
+    background-color: cornflowerblue;
+}
+
+#dateForm  {
+    display: none;
+    position: fixed;
+    bottom: 0;
+
 }

@@ -1,13 +1,79 @@
 {% extends "base.html" %}
 {% block head %}
+    {{super()}}
     <link rel="stylesheet" href="{{ url_for('static', filename='/css/reviewer.css') }}">
 {% endblock %}
 {% block content %}
-    {% for review in reviews %}
-    <div class ="card">
-        <p>{{review.title}}</p>
-        <p>{{review.requestor_name}}</p>
-        <p>{{review.date}}</p>
+    <div class="container mt-3">
+        <div class = "row">
+            <div class= "col-md-9 main_content">
+                 {% for review in reviews %}
+                    <div class ="col-md-4">
+                        <div class ="card">
+                            <p class ="title">{{review.title}}</p>
+                            <p class ="name">{{review.requestor_name}}</p>
+                            <p class ="date">{{review.date}}</p>
+                             
+                                <button type="sumbit" onclick="openForm(this.id)" id = '{{review.id}}'> Accept</button>
+                               
+                                
+                           
+                        </div>
+                    </div> {% endfor%}<div id="dateForm">
+                                    <h1>select a date</h1>
+                                    <input id = "datepick">
+                                    <button type="submit" class="button" id = "num"> Suggest</button> 
+                                    
+                                    <button type="button" class="close" onclick="closeForm()">Cancel</button>
+                               </div>
+            </div>
+                 
+            <div class="col-md-3">
+                <div class="row">
+                    <div class = "side_content">
+
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-    {% endfor%}
+
+    {% block script %}
+    <script> 
+    
+        var x;
+
+        function closeForm() {
+            document.getElementById("dateForm").style.display = "none";
+            document.getElementById(x.id).setAttribute("id","num")
+        }
+            
+            $(function() {
+                $('.button').click(function() {
+                    console.log("we made it");
+                    var id = this.id;
+                   console.log(id);
+                   
+                    $.ajax({
+                        type: 'POST',
+                        url: '/accept',
+                        data : {'data':id}
+                    });
+                    console.log("we here");
+                });
+            });
+
+            function openForm(id) {
+                id = id +'x'
+                document.getElementById("dateForm").style.display = "block";
+                document.getElementById("num").setAttribute("id", id)
+                x = document.getElementById(id);
+            }
+
+        $(function () {
+        $('#datepick').datetimepicker();
+    });
+
+    </script>
+    {% endblock %}
 {% endblock %}

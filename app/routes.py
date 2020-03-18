@@ -168,11 +168,16 @@ def requestor():
 def reviewer():
     #reviews = db.session.query(Review).order_by(Review.id).all()
     reviews = Review.query.order_by(Review.id).all()
-    print('####################') 
-    print(reviews)
-    print('###################')
-    print('####################')
     return render_template('reviewer.html', reviews=reviews)
+
+@app.route("/accept", methods=['GET', 'POST'])
+def accept():
+    id = request.form['data']
+    Review.change_status(1,id)
+    print(request.form['data'])
+    print('###########################################')
+    return None
+   
 
 def get_google_provider_cfg():
     return requests.get(GOOGLE_DISCOVERY_URL).json()
