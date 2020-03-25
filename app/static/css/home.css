@@ -1,0 +1,10 @@
+.main-content {
+    min-height: 80%;
+    background-color: lightskyblue;
+}
+
+.sidebar-content {
+    min-height: 35%;
+    background-color: mediumslateblue;
+    margin-bottom: 10rem;
+}

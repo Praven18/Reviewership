@@ -173,10 +173,12 @@ def reviewer():
 @app.route("/accept", methods=['GET', 'POST'])
 def accept():
     id = request.form['data']
-    Review.change_status(1,id)
+    id=id[:-1]
+    print(id)
+    Review.change_status(2,id,current_user)
     print(request.form['data'])
     print('###########################################')
-    return None
+    
    
 
 def get_google_provider_cfg():

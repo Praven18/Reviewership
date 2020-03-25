@@ -1,9 +1,36 @@
 {% extends "base.html" %}
 
+{% block head %}
+    {{super()}}
+    <link rel="stylesheet" href="{{ url_for('static', filename='/css/home.css') }}">
+{% endblock %}
+
 {% block content %}
-<p>Hello, {{user.first_name}}! You're logged in! Email: {{user.email}}</p>
-            <div><p>Google Profile Picture:</p>
-            <img src="{{user.profile_pic}}" alt="Google profile pic"></img></div>
-            <a class="button" href="/logout">Logout</a>
+
+<div class="container mt-3">
+    <div class="row">
+       
+        <div class="col-sm-4">
+            <!--Nested rows within a column-->
+            <div class="row">
+                <div class="col-12">
+                    <div class="sidebar-content">side</div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12">
+                    <div class="sidebar-content">side</div>
+                </div>
+               
+            </div>
+        </div> 
+        <div class="col-sm-4">
+            <div class="main-content">main</div>
+        </div>
+        <div class="col-sm-4">
+            <div class="main-content">main</div>
+        </div>
+    </div>
+</div>
             
 {% endblock %}

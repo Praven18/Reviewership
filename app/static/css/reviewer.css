@@ -32,6 +32,7 @@ p {
 
 .side_content {
     background-color: cornflowerblue;
+    min-height: 100px;
 }
 
 #dateForm  {
@@ -39,4 +40,9 @@ p {
     position: fixed;
     bottom: 0;
 
+}
+
+.container {
+    margin-left: 0em;
+    margin-right: 0em;
 }
