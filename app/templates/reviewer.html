@@ -19,15 +19,22 @@
                                 
                            
                         </div>
-                    </div> {% endfor%}<div id="dateForm">
-                                    <h1>select a date</h1>
-                                    <input id = "datepick">
-                                    <button type="submit" class="button" id = "num"> Suggest</button> 
-                                    
-                                    <button type="button" class="close" onclick="closeForm()">Cancel</button>
-                               </div>
+                    </div> 
+                 {% endfor%}
+           
             </div>
-                 
+            
+            <form id = "dateForm" action="" method="POST" novalidate>
+                <div id ="num" class=col-md-3>
+                    {{ form.hidden_tag() }}
+                    <h2>Select a date</h2>
+                    {{form.date}}
+                    {{form.submit(class_="test")}}
+                   
+                    <button type="button" class="close" onclick="closeForm()">Cancel</button>
+                    {{form.id}}
+                </div>
+            </form>
             <div class="col-md-3">
                 <div class="row">
                     <div class = "side_content">
@@ -45,30 +52,33 @@
 
         function closeForm() {
             document.getElementById("dateForm").style.display = "none";
-            document.getElementById(x.id).setAttribute("id","num")
+            
         }
             
             $(function() {
-                $('.button').click(function() {
+                $('.test').click(function() {
                     console.log("we made it");
-                    var id = this.id;
+                    var id = x.id;
                    console.log(id);
                    
                     $.ajax({
                         type: 'POST',
-                        url: '/accept',
-                        data : {'data':id}
+                        url: "/reviewer" ,                       
+                        data : {'id':id}
                     });
                     console.log("we here");
                 });
             });
 
             function openForm(id) {
-                id = id +'x'
+                //id = id 
                 document.getElementById("dateForm").style.display = "block";
-                document.getElementById("num").setAttribute("id", id)
+                document.getElementById("submit").setAttribute("id", id)
                 x = document.getElementById(id);
+                document.getElementById("id").value = id
             }
+
+        
 
         $(function () {
         $('#datepick').datetimepicker();

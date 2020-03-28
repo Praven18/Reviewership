@@ -25,9 +25,9 @@ def upgrade():
     sa.Column('biling', sa.String(), nullable=True),
     sa.Column('status', sa.Integer(), nullable=True),
     sa.Column('date', sa.DateTime(), nullable=True),
-    sa.Column('requestor', sa.String(), nullable=True),
+    sa.Column('requestor', sa.Integer(), nullable=True),
     sa.Column('requestor_name', sa.String(), nullable=True),
-    sa.Column('reviewer', sa.String(), nullable=True),
+    sa.Column('reviewer', sa.Integer(), nullable=True),
     sa.Column('reviewer_name', sa.String(), nullable=True),
     sa.PrimaryKeyConstraint('id')
     )
