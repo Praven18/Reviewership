@@ -13,6 +13,8 @@ from flask_login import (
 from app.models import User, Review
 from app.forms import CreateForm, DateForm
 from app import db, login_manager
+import datetime
+
 #from app import app
 
 
@@ -59,6 +61,7 @@ def index():
 
 @app.route("/home")
 def home():
+    
     user = {'first_name': current_user.first_name, 'email': current_user.email, 'profile_pic': current_user.profile_pic}
     return render_template('home.html', user=user)
 
@@ -155,7 +158,7 @@ def requestor():
     form = CreateForm()
     if form.validate_on_submit():
         print(current_user.first_name)
-        review = Review(title=form.title.data, description=form.description.data, biling=form.biling.data, status = 1, requestor = current_user.id, requestor_name=User.get_name(current_user.id))
+        review = Review(title=form.title.data, description=form.description.data, biling=form.biling.data, status = 1, requestor = current_user.id, requestor_name=User.get_name(current_user.id), date = datetime.datetime.now())
         db.session.add(review)
         db.session.commit()
         print('good')
@@ -166,7 +169,7 @@ def requestor():
 
 @app.route("/reviewer", methods=['GET', 'POST'])
 def reviewer():
-    reviews = Review.query.order_by(Review.id).all()
+    reviews = Review.query.order_by(Review.id).filter(Review.status==1)
     form = DateForm()
     if form.validate_on_submit():
         print('+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++')
@@ -175,7 +178,7 @@ def reviewer():
         print(form.id.data)
         print(form.submit)
         print('+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++')
-        Review.change_status(1,form.id.data,current_user.id,User.get_name(current_user.id),form.date.data)
+        Review.change_status(2,form.id.data,current_user.id,User.get_name(current_user.id),form.date.data)
     return render_template('reviewer.html', reviews=reviews, form=form)
 
 @app.route("/accept", methods=['GET', 'POST'])

@@ -25,12 +25,6 @@
             {{form.biling.label}}<br>
             {{form.biling}}
         </p>
-        {{form.date.label}}
-        
-            <p>
-            
-            {{form.date}}
-            </p>
             </div>
         </div>
         </p>
@@ -40,10 +34,5 @@
 {% endblock %}
 
 {% block scripts %}
-    {{ super() }}
-    <script type="text/javascript">
-        $(function () {
-        $('#datepick').datetimepicker();
-    });
-  </script>
+   
 {% endblock %}

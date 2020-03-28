@@ -12,7 +12,7 @@
                         <div class ="card">
                             <p class ="title">{{review.title}}</p>
                             <p class ="name">{{review.requestor_name}}</p>
-                            <p class ="date">{{review.date}}</p>
+                            <p class ="date">{{review.date|date_filter}}</p>
                              
                                 <button type="sumbit" onclick="openForm(this.id)" id = '{{review.id}}'> Accept</button>
                                

@@ -18,7 +18,6 @@ class CreateForm(FlaskForm):
     title = StringField('Title:', validators=[InputRequired('A title is required.'), DataRequired()])
     description = TextAreaField('Description:', validators=[InputRequired('A description is required.'), DataRequired()]) 
     biling = StringField('Biling address:', validators=[InputRequired('A Biling address is required.'), DataRequired()])
-    date = DateTimeField('Choose date and time:', validators=[DataRequired()], id ='datepick', format='%m/%d/%Y %H:%M %p')
     create = SubmitField('Create')
 
 class DateForm(FlaskForm):

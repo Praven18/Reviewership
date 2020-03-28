@@ -62,9 +62,9 @@ class Review(db.Model):
     biling = db.Column(db.String)
     status = db.Column(db.Integer)
     date = db.Column(db.DateTime, nullable = True)
-    requestor = db.Column(db.Integer, nullable=True)
+    requestor = db.Column(db.String, nullable=True)
     requestor_name = db.Column(db.String, nullable=True)
-    reviewer = db.Column(db.Integer, nullable=True)
+    reviewer = db.Column(db.String, nullable=True)
     reviewer_name = db.Column(db.String, nullable=True)
 
     def __repr__(self):
@@ -82,7 +82,7 @@ class Review(db.Model):
        review.status = int
        print('+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++')
        print('made')
-       review.reviewer = review_id
+       review.reviewer = reviewer_id
        print('made')
        review.reviewer_name = reviewer_name
        review.date = date
