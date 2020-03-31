@@ -1,0 +1,14 @@
+body {
+    background-color: #F8F8F8 !important;
+}
+
+.card {
+    border-style: solid;
+    border-width: thin;
+    border-color: grey;
+    height: 172px;
+    font-family: 'Roboto', sans-serif;
+    background-color:  white;
+    padding: 3px;
+    border-radius: 13px;
+}

@@ -28,7 +28,7 @@ class User(UserMixin, db.Model):
 
     def get(uid):
         for user in db.session.query(User).filter(User.id==uid):
-            print(user)
+         print(type(user))
         
         return user
 
@@ -52,7 +52,7 @@ class Review(db.Model):
     Requestor Name:    The name of the requestor
     ReviewerID:        The id of the reviewer
     Reviewer Name:     The name of the reviewer 
-
+    last changed:      Stores the id of the person who last proposed the date
 
     """   
 
@@ -61,11 +61,35 @@ class Review(db.Model):
     description = db.Column(db.String)
     biling = db.Column(db.String)
     status = db.Column(db.Integer)
-    date = db.Column(db.DateTime)
+    date = db.Column(db.DateTime, nullable = True)
     requestor = db.Column(db.String, nullable=True)
     requestor_name = db.Column(db.String, nullable=True)
     reviewer = db.Column(db.String, nullable=True)
     reviewer_name = db.Column(db.String, nullable=True)
+    last_changed = db.Column(db.String, nullable=True)
 
     def __repr__(self):
-        return '<User {}>'.format([self.id,self.title,self.description,self.biling,self.status,self.date,self.requestor,self.requestor_name,self.reviewer,self.reviewer_name])
+        return '<Review {}>'.format([self.id,self.title,self.description,self.biling,self.status,self.date,self.requestor,self.requestor_name,self.reviewer,self.reviewer_name])
+
+    def get(rid):
+        for review in db.session.query(Review).filter(Review.id==rid):
+            print(type(review))
+            print(review)
+        return review
+    
+    def change_status(int, review_id,reviewer_id,reviewer_name,date):
+       print('----------------------------------------------')
+       review = Review.get(review_id)
+       review.status = int
+       print('+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++')
+       print('made')
+       review.reviewer = reviewer_id
+       print('made')
+       review.reviewer_name = reviewer_name
+       review.date = date
+       review.last_changed = reviewer_id
+       db.session.commit()
+
+
+
+

@@ -1,13 +1,90 @@
 {% extends "base.html" %}
 {% block head %}
+    {{super()}}
     <link rel="stylesheet" href="{{ url_for('static', filename='/css/reviewer.css') }}">
 {% endblock %}
 {% block content %}
-    {% for review in reviews %}
-    <div class ="card">
-        <p>{{review.title}}</p>
-        <p>{{review.requestor_name}}</p>
-        <p>{{review.date}}</p>
+    <div class="container mt-3">
+        <div class = "row">
+            <div class= "col-lg-9 main_content">
+                 {% for review in reviews %}
+                    <div class ="col-md-4">
+                        <div class ="card">
+                            <p class ="title"> {{review.title}}</p>
+                            <p class ="name">Requested by: {{review.requestor_name}}</p>
+                            <p class ="date">Created on: {{review.date|date_filter}}</p>
+                            
+                             <div class ="tag">c++</div>
+                            <button type="sumbit" class="accept" onclick="openForm(this.id)" id = '{{review.id}}'> Accept</button>
+                            
+                                
+                           
+                        </div>
+                    </div> 
+                 {% endfor%}
+           
+            </div>
+            
+            <form id = "dateForm" action="" method="POST" novalidate>
+                <div id ="num" class=col-md-3>
+                    {{ form.hidden_tag() }}
+                    <h2>Select a date</h2>
+                    {{form.date}}
+                    {{form.submit(class_="test")}}
+                   
+                    <button type="button" class="close" onclick="closeForm()">Cancel</button>
+                    {{form.id}}
+                </div>
+            </form>
+            <div class="col-md-3">
+                <div class="row">
+                    <div class = "side_content">
+
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-    {% endfor%}
+
+    {% block script %}
+    <script> 
+    
+        var x;
+
+        function closeForm() {
+            document.getElementById("dateForm").style.display = "none";
+            
+        }
+            
+            $(function() {
+                $('.test').click(function() {
+                    console.log("we made it");
+                    var id = x.id;
+                   console.log(id);
+                   
+                    $.ajax({
+                        type: 'POST',
+                        url: "/reviewer" ,                       
+                        data : {'id':id}
+                    });
+                    console.log("we here");
+                });
+            });
+
+            function openForm(id) {
+                //id = id 
+                document.getElementById("dateForm").style.display = "block";
+                document.getElementById("submit").setAttribute("id", id)
+                x = document.getElementById(id);
+                document.getElementById("id").value = id
+            }
+
+        
+
+        $(function () {
+        $('#datepick').datetimepicker();
+    });
+
+    </script>
+    {% endblock %}
 {% endblock %}

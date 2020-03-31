@@ -10,9 +10,12 @@ from flask_login import (
     login_user,
     logout_user,
 )
+from sqlalchemy import or_
 from app.models import User, Review
-from app.forms import CreateForm
+from app.forms import CreateForm, DateForm
 from app import db, login_manager
+import datetime
+
 #from app import app
 
 
@@ -59,8 +62,11 @@ def index():
 
 @app.route("/home")
 def home():
+    proposed_reviews = Review.query.order_by(Review.id).filter(Review.status==2).filter(or_(Review.requestor == current_user.id, Review.reviewer == current_user.id)).filter(Review.last_changed == current_user.id)
+    received_reviews = Review.query.order_by(Review.id).filter(Review.status==2).filter(or_(Review.requestor == current_user.id, Review.reviewer == current_user.id)).filter(Review.last_changed != current_user.id)
+    progress_reviews = Review.query.order_by(Review.id).filter(Review.status==3).filter(or_(Review.requestor == current_user.id, Review.reviewer == current_user.id))
     user = {'first_name': current_user.first_name, 'email': current_user.email, 'profile_pic': current_user.profile_pic}
-    return render_template('home.html', user=user)
+    return render_template('home.html', user=user, proposed_reviews=proposed_reviews, received_reviews=received_reviews)
 
 @app.route("/login")
 def login():
@@ -155,7 +161,7 @@ def requestor():
     form = CreateForm()
     if form.validate_on_submit():
         print(current_user.first_name)
-        review = Review(title=form.title.data, description=form.description.data, biling=form.biling.data, status = 1, requestor = current_user.id, requestor_name=User.get_name(current_user.id), date= form.date.data)
+        review = Review(title=form.title.data, description=form.description.data, biling=form.biling.data, status = 1, requestor = current_user.id, requestor_name=User.get_name(current_user.id), date = datetime.datetime.now())
         db.session.add(review)
         db.session.commit()
         print('good')
@@ -166,13 +172,27 @@ def requestor():
 
 @app.route("/reviewer", methods=['GET', 'POST'])
 def reviewer():
-    #reviews = db.session.query(Review).order_by(Review.id).all()
-    reviews = Review.query.order_by(Review.id).all()
-    print('####################') 
+    reviews = Review.query.order_by(Review.id).filter(Review.status==1)
     print(reviews)
-    print('###################')
-    print('####################')
-    return render_template('reviewer.html', reviews=reviews)
+    form = DateForm()
+    if form.validate_on_submit():
+        print('+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++')
+        print(form.date.data)
+        #id = request.data
+        print(form.id.data)
+        print(form.submit)
+        print('+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++')
+        Review.change_status(2,form.id.data,current_user.id,User.get_name(current_user.id),form.date.data)
+    return render_template('reviewer.html', reviews=reviews, form=form)
+
+@app.route("/accept", methods=['GET', 'POST'])
+def accept():
+    id = request.form.data
+    #Review.change_status(2,id)
+    print(request.form['data'])
+    print('###########################################')
+    
+   
 
 def get_google_provider_cfg():
     return requests.get(GOOGLE_DISCOVERY_URL).json()
