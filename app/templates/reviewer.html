@@ -10,12 +10,13 @@
                  {% for review in reviews %}
                     <div class ="col-md-4">
                         <div class ="card">
-                            <p class ="title">{{review.title}}</p>
-                            <p class ="name">{{review.requestor_name}}</p>
-                            <p class ="date">{{review.date|date_filter}}</p>
-                             
-                                <button type="sumbit" onclick="openForm(this.id)" id = '{{review.id}}'> Accept</button>
-                               
+                            <p class ="title"> {{review.title}}</p>
+                            <p class ="name">Requested by: {{review.requestor_name}}</p>
+                            <p class ="date">Created on: {{review.date|date_filter}}</p>
+                            
+                             <div class ="tag">c++</div>
+                            <button type="sumbit" class="accept" onclick="openForm(this.id)" id = '{{review.id}}'> Accept</button>
+                            
                                 
                            
                         </div>

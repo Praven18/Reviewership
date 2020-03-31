@@ -10,6 +10,7 @@ from flask_login import (
     login_user,
     logout_user,
 )
+from sqlalchemy import or_
 from app.models import User, Review
 from app.forms import CreateForm, DateForm
 from app import db, login_manager
@@ -61,9 +62,11 @@ def index():
 
 @app.route("/home")
 def home():
-    
+    proposed_reviews = Review.query.order_by(Review.id).filter(Review.status==2).filter(or_(Review.requestor == current_user.id, Review.reviewer == current_user.id)).filter(Review.last_changed == current_user.id)
+    received_reviews = Review.query.order_by(Review.id).filter(Review.status==2).filter(or_(Review.requestor == current_user.id, Review.reviewer == current_user.id)).filter(Review.last_changed != current_user.id)
+    progress_reviews = Review.query.order_by(Review.id).filter(Review.status==3).filter(or_(Review.requestor == current_user.id, Review.reviewer == current_user.id))
     user = {'first_name': current_user.first_name, 'email': current_user.email, 'profile_pic': current_user.profile_pic}
-    return render_template('home.html', user=user)
+    return render_template('home.html', user=user, proposed_reviews=proposed_reviews, received_reviews=received_reviews)
 
 @app.route("/login")
 def login():
@@ -170,6 +173,7 @@ def requestor():
 @app.route("/reviewer", methods=['GET', 'POST'])
 def reviewer():
     reviews = Review.query.order_by(Review.id).filter(Review.status==1)
+    print(reviews)
     form = DateForm()
     if form.validate_on_submit():
         print('+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++')

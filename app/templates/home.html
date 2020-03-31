@@ -14,12 +14,28 @@
             <!--Nested rows within a column-->
             <div class="row">
                 <div class="col-12">
-                    <div class="sidebar-content">side</div>
+                    <div class="sidebar-content">side
+                        {% for review in received_reviews %}
+                            <div class = card>
+                                <p class ="title">{{review.title}}</p>
+                                <p class ="name">{{review.requestor_name}}</p>
+                                <p class ="date">{{review.date}}</p>
+                            </div>
+                        {% endfor %}
+                    </div>
                 </div>
             </div>
             <div class="row">
                 <div class="col-12">
-                    <div class="sidebar-content">side</div>
+                    <div class="sidebar-content">side
+                        {% for review in proposed_reviews %}
+                        <div class = card>
+                            <p class ="title">{{review.title}}</p>
+                            <p class ="name">{{review.requestor_name}}</p>
+                            <p class ="date">{{review.date}}</p>
+                        </div>
+                    {% endfor %}
+                    </div>
                 </div>
                
             </div>

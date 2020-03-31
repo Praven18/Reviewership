@@ -52,7 +52,7 @@ class Review(db.Model):
     Requestor Name:    The name of the requestor
     ReviewerID:        The id of the reviewer
     Reviewer Name:     The name of the reviewer 
-
+    last changed:      Stores the id of the person who last proposed the date
 
     """   
 
@@ -66,6 +66,7 @@ class Review(db.Model):
     requestor_name = db.Column(db.String, nullable=True)
     reviewer = db.Column(db.String, nullable=True)
     reviewer_name = db.Column(db.String, nullable=True)
+    last_changed = db.Column(db.String, nullable=True)
 
     def __repr__(self):
         return '<Review {}>'.format([self.id,self.title,self.description,self.biling,self.status,self.date,self.requestor,self.requestor_name,self.reviewer,self.reviewer_name])
@@ -86,6 +87,7 @@ class Review(db.Model):
        print('made')
        review.reviewer_name = reviewer_name
        review.date = date
+       review.last_changed = reviewer_id
        db.session.commit()
 
 
