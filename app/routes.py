@@ -60,13 +60,21 @@ def index():
         return render_template('index.html')
         #return '<a class="button" href="/login">Google Login</a>'
 
-@app.route("/home")
-def home():
+@app.route("/home", methods=['GET', 'POST'])
+def home(): 
+    forms = DateForm()
+    if request.method== 'POST':
+        id = request.form['id']
+        Review.accept_review(id)
     proposed_reviews = Review.query.order_by(Review.id).filter(Review.status==2).filter(or_(Review.requestor == current_user.id, Review.reviewer == current_user.id)).filter(Review.last_changed == current_user.id)
     received_reviews = Review.query.order_by(Review.id).filter(Review.status==2).filter(or_(Review.requestor == current_user.id, Review.reviewer == current_user.id)).filter(Review.last_changed != current_user.id)
     progress_reviews = Review.query.order_by(Review.id).filter(Review.status==3).filter(or_(Review.requestor == current_user.id, Review.reviewer == current_user.id))
+    if forms.validate_on_submit:
+        print('8888888888888888888888888888888888888888888888888')
     user = {'first_name': current_user.first_name, 'email': current_user.email, 'profile_pic': current_user.profile_pic}
-    return render_template('home.html', user=user, proposed_reviews=proposed_reviews, received_reviews=received_reviews)
+  
+   
+    return render_template('home.html', user=user, forms=forms,proposed_reviews=proposed_reviews, received_reviews=received_reviews, progress_reviews=progress_reviews)
 
 @app.route("/login")
 def login():
@@ -161,7 +169,7 @@ def requestor():
     form = CreateForm()
     if form.validate_on_submit():
         print(current_user.first_name)
-        review = Review(title=form.title.data, description=form.description.data, biling=form.biling.data, status = 1, requestor = current_user.id, requestor_name=User.get_name(current_user.id), date = datetime.datetime.now())
+        review = Review(title=form.title.data, description=form.description.data, biling=form.biling.data, status = 1, requestor = current_user.id, requestor_name=User.get_name(current_user.id), date = datetime.datetime.now(), pic=current_user.profile_pic)
         db.session.add(review)
         db.session.commit()
         print('good')
@@ -187,9 +195,9 @@ def reviewer():
 
 @app.route("/accept", methods=['GET', 'POST'])
 def accept():
-    id = request.form.data
+    id = request.form
     #Review.change_status(2,id)
-    print(request.form['data'])
+    print(id)
     print('###########################################')
     
    

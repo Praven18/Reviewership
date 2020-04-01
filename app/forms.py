@@ -27,6 +27,6 @@ class DateForm(FlaskForm):
     """
     date = DateTimeField('Choose date and time:', validators=[DataRequired()], id ='datepick', format='%m/%d/%Y %H:%M %p')
     id = IntegerField()
-    submit = SubmitField('Submit')
+    submit = SubmitField('SUBMIT')
 
         

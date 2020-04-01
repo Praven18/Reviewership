@@ -51,6 +51,7 @@ class Review(db.Model):
     RequestorID:       The id of the requestor
     Requestor Name:    The name of the requestor
     ReviewerID:        The id of the reviewer
+    pic
     Reviewer Name:     The name of the reviewer 
     last changed:      Stores the id of the person who last proposed the date
 
@@ -64,6 +65,7 @@ class Review(db.Model):
     date = db.Column(db.DateTime, nullable = True)
     requestor = db.Column(db.String, nullable=True)
     requestor_name = db.Column(db.String, nullable=True)
+    pic = db.Column(db.String, nullable=True)
     reviewer = db.Column(db.String, nullable=True)
     reviewer_name = db.Column(db.String, nullable=True)
     last_changed = db.Column(db.String, nullable=True)
@@ -78,18 +80,19 @@ class Review(db.Model):
         return review
     
     def change_status(int, review_id,reviewer_id,reviewer_name,date):
-       print('----------------------------------------------')
        review = Review.get(review_id)
        review.status = int
-       print('+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++')
-       print('made')
        review.reviewer = reviewer_id
-       print('made')
        review.reviewer_name = reviewer_name
        review.date = date
        review.last_changed = reviewer_id
        db.session.commit()
-
+    
+    def accept_review(id):
+        review = Review.get(id)
+        review.status= review.status + 1
+        db.session.commit()
+        
 
 
 

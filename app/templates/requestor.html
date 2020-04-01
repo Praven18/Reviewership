@@ -7,28 +7,30 @@
 {% endblock %}
 
 {% block content %}
-    <h1> Make a review</h1>
-    <div class = "container"><div class= "row">
+   
+    <div class = "container"> <h1> Make a review</h1><div class= "row">
 
     <form action="" method="post" novalidate>
-        <div class = "col-sm-4">
+        <div class= col-md-8>
+            <div class = "row justify-content-center">
         {{ form.hidden_tag() }}
-        <p>
+        
             {{form.title.label}}<br>
             {{form.title}}
-        </p>
-        <p>
+         </div><div class=row>
+       
             {{form.description.label}}<br>
             {{form.description}}
-        </p>
-        <p>
+        </div> <div class=row>
+        
             {{form.biling.label}}<br>
             {{form.biling}}
-        </p>
-            </div>
-        </div>
-        </p>
-        <p>{{ form.create() }}</p>
+        
+           </div>
+        
+       <div class=row>
+        {{ form.create() }}</div>
+    </div>
     </form>
     </div>
 {% endblock %}
