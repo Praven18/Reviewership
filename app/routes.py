@@ -109,13 +109,19 @@ def callback():
         redirect_url=request.base_url,
         code=code,
     )
+
+    print('+++++++++++++++++++++++++++')
+    #print(client.prepare_token_request(token_endpoint,authorization_response=request.url,redirect_url=request.base_url,code=code,)
+    print(token_url)
+    print(headers)
+    print(body)
     token_response = requests.post(
         token_url,
         headers=headers,
         data=body,
         auth=(GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET),
     )
-
+    print(token_response)
     # Parse the tokens!
     client.parse_request_body_response(json.dumps(token_response.json()))
 
@@ -166,17 +172,20 @@ def logout():
 
 @app.route("/requestor", methods=['GET', 'POST'])
 def requestor():
-    form = CreateForm()
-    if form.validate_on_submit():
+    cform = CreateForm()
+    if cform.validate_on_submit():
         print(current_user.first_name)
-        review = Review(title=form.title.data, description=form.description.data, biling=form.biling.data, status = 1, requestor = current_user.id, requestor_name=User.get_name(current_user.id), date = datetime.datetime.now(), pic=current_user.profile_pic)
+        review = Review(title=cform.title.data, description=cform.description.data, biling=cform.biling.data, status = 1, requestor = current_user.id, requestor_name=User.get_name(current_user.id), date = datetime.datetime.now(), pic=current_user.profile_pic)
         db.session.add(review)
-        db.session.commit()
+        db.session.commit()       
+        tags=cform.tags.data
+        tag_list=tags.split()
+        Review.setTags(tag_list,review.id)
         print('good')
     else:
         print('bad')
         
-    return render_template('requestor.html', form=form)
+    return render_template('requestor.html', cform=cform)
 
 @app.route("/reviewer", methods=['GET', 'POST'])
 def reviewer():
@@ -199,6 +208,8 @@ def accept():
     #Review.change_status(2,id)
     print(id)
     print('###########################################')
+
+
     
    
 
