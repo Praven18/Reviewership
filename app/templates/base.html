@@ -15,9 +15,10 @@
     </head>
     <body>
         <div>
-            <a href="{{ url_for('app.index')}}">Home</a>  
+            <a href="{{ url_for('app.home')}}">Home</a>  
             <a href="{{ url_for('app.requestor')}}">Requestor</a>
             <a href="{{ url_for('app.reviewer')}}">Reviewer</a>
+            <a href="{{ url_for('app.index')}}">login</a>
         </div>
         <hr>
         {% block content %}{% endblock %} 

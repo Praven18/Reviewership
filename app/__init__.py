@@ -53,9 +53,7 @@ def create_app():
   
 
 def date_filter(date):
-    print('++++++++++++++++++++++++++++++++++++++++++++++')
-    print(type(date))
-    return date.now().strftime('%m-%d-%Y')
+    return date.strftime('%m-%d-%Y')
     
 
 

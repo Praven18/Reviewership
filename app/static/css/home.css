@@ -8,3 +8,52 @@
     background-color: mediumslateblue;
     margin-bottom: 10rem;
 }
+
+p {
+    margin-left: 10px;
+}
+.title {
+    font-size: 20px;
+    font-weight: 600;
+    letter-spacing: .015px;
+    margin-bottom: 5px;
+}
+
+.name {
+    font-size: 16px;
+    font-weight: 500;
+
+}
+
+.date {
+    font-size: 16px;
+    font-weight: 500;
+}
+
+.btn {
+    float: left;
+    margin: auto;
+    color: #2F80ED;
+    padding-top: 15px;
+    padding-right: 20px;
+    font-size: 16px;
+    font-weight: 500;
+    background: none;
+    border:none;
+    width: 86px;
+}
+
+#dateForm  {
+    display: none;
+    position: absolute;
+    height: 150px;
+    width: 200px;
+    top: 50%;
+    left: 50%;
+    font-family: 'Roboto', sans-serif;
+    background-color: white;
+}
+
+#id {
+    display: none;
+}

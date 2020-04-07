@@ -51,9 +51,10 @@ class Review(db.Model):
     RequestorID:       The id of the requestor
     Requestor Name:    The name of the requestor
     ReviewerID:        The id of the reviewer
+    pic
     Reviewer Name:     The name of the reviewer 
     last changed:      Stores the id of the person who last proposed the date
-
+    tags:              Tags on Review
     """   
 
     id = db.Column(db.Integer, index=True, unique=True,primary_key=True)
@@ -64,9 +65,11 @@ class Review(db.Model):
     date = db.Column(db.DateTime, nullable = True)
     requestor = db.Column(db.String, nullable=True)
     requestor_name = db.Column(db.String, nullable=True)
+    pic = db.Column(db.String, nullable=True)
     reviewer = db.Column(db.String, nullable=True)
     reviewer_name = db.Column(db.String, nullable=True)
     last_changed = db.Column(db.String, nullable=True)
+    tags = db.relationship('reviewTags', back_populates='review')
 
     def __repr__(self):
         return '<Review {}>'.format([self.id,self.title,self.description,self.biling,self.status,self.date,self.requestor,self.requestor_name,self.reviewer,self.reviewer_name])
@@ -78,18 +81,53 @@ class Review(db.Model):
         return review
     
     def change_status(int, review_id,reviewer_id,reviewer_name,date):
-       print('----------------------------------------------')
        review = Review.get(review_id)
        review.status = int
-       print('+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++')
-       print('made')
        review.reviewer = reviewer_id
-       print('made')
        review.reviewer_name = reviewer_name
        review.date = date
        review.last_changed = reviewer_id
        db.session.commit()
+    
+    def accept_review(id):
+        review = Review.get(id)
+        review.status= review.status + 1
+        db.session.commit()
 
+    def setTags(tags, id):
+        for tag in tags:
+            print('777777777777777777777777')
+            print(tag)
+            exist = Tag.query.filter_by(tag=tag).first()
+            if exist == None:
+                new_tag = Tag(tag=tag)
+                db.session.add(new_tag)
+                exist = Tag.query.filter_by(tag=tag).first()
+            review_tag = reviewTags(review_id=id,tag_id=exist.id) 
+            db.session.add(review_tag)
+            db.session.commit()
+        
 
+class Tag(db.Model):
+    """
+
+    """
+    id = db.Column(db.Integer, primary_key=True)
+    tag = db.Column(db.String, index=True)
+    review = db.relationship('reviewTags', back_populates='tag')
+
+    def __repr__(self):
+        return '<Note: {}>'.format(self.tag)
+
+class reviewTags(db.Model):
+    """
+
+    """
+
+    review_id = db.Column(db.Integer, db.ForeignKey(Review.id), primary_key=True)
+    review = db.relationship('Review',back_populates='tags')
+    tag_id = db.Column(db.Integer, db.ForeignKey(Tag.id), primary_key=True)
+    tag = db.relationship('Tag',back_populates='review')
+    
 
 

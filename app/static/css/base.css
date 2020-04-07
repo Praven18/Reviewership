@@ -5,10 +5,12 @@ body {
 .card {
     border-style: solid;
     border-width: thin;
-    border-color: grey;
+    border-color: white;
     height: 172px;
     font-family: 'Roboto', sans-serif;
     background-color:  white;
     padding: 3px;
     border-radius: 13px;
+    padding-bottom: 10px;
+    max-width: 400px;
 }
