@@ -1,0 +1,15 @@
+.container {
+    /*background-color: indigo;*/
+    margin-left: 0px;
+}
+
+.user {
+    background-color: lightcoral;
+    margin-bottom: 10px;
+}
+
+.pic {
+    height: 50px;
+    width: 50px;
+    border-radius: 50%;
+}

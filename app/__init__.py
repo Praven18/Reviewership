@@ -21,6 +21,7 @@ import requests
 from config import Config
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
+import datetime
 
 db = SQLAlchemy()
 migrate = Migrate()
@@ -39,14 +40,10 @@ def create_app():
     )
     # OAuth2 client setup
     client = WebApplicationClient(GOOGLE_CLIENT_ID)
-
-  
-    
-
-
-
     db.init_app(app)
     migrate.init_app(app, db)
+
+    app.jinja_env.filters['date_filter'] = date_filter
     
     with app.app_context():
         from . import routes
@@ -55,7 +52,8 @@ def create_app():
 
   
 
-
+def date_filter(date):
+    return date.strftime('%m-%d-%Y')
     
 
 

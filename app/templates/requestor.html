@@ -3,47 +3,98 @@
 
 {% block head %}
 {{ super() }}
+<link rel="stylesheet" href="{{ url_for('static', filename='/css/requestor.css') }}">
 <link type="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/css/bootstrap-datetimepicker.min.css">
 {% endblock %}
 
 {% block content %}
-    <h1> Make a review</h1>
-    <div class = "container"><div class= "row">
+   
+    <div class = "container"> <h1> Make a review</h1><div class= "row">
 
     <form action="" method="post" novalidate>
-        <div class = "col-sm-4">
-        {{ form.hidden_tag() }}
-        <p>
-            {{form.title.label}}<br>
-            {{form.title}}
-        </p>
-        <p>
-            {{form.description.label}}<br>
-            {{form.description}}
-        </p>
-        <p>
-            {{form.biling.label}}<br>
-            {{form.biling}}
-        </p>
-        {{form.date.label}}
+        <div class= col-md-8>
+            <div class = "row justify-content-center">
+        {{ cform.hidden_tag() }}
         
-            <p>
-            
-            {{form.date}}
-            </p>
-            </div>
-        </div>
-        </p>
-        <p>{{ form.create() }}</p>
+            {{cform.title.label}}<br>
+            {{cform.title}}
+         </div><div class=row>
+       
+            {{cform.description.label}}<br>
+            {{cform.description}}
+        </div> <div class=row>
+        
+            {{cform.biling.label}}<br>
+            {{cform.biling}}
+            {{cform.tags}}
+        
+           </div>
+        <p>tags</p>
+        <input type="text" id=input>
+        <button  type = button onclick=addTag() id=button>Add Tag </button>
+       <div class=row>
+        {{ cform.create() }}</div>
+    </div>
     </form>
     </div>
-{% endblock %}
+
+    <div class = tagList>
+        Tag list
+        <ul id = 'list'>
+           
+        </ul>
+    </div>
+    </div>
+
 
 {% block scripts %}
-    {{ super() }}
-    <script type="text/javascript">
-        $(function () {
-        $('#datepick').datetimepicker();
-    });
-  </script>
+<script>
+    function addTag() {
+        tag = document.getElementById('input').value;
+        ul = document.getElementById('list');
+        li = document.createElement("li")
+        li.appendChild(document.createTextNode(tag));
+        ul.appendChild(li);
+        var text='';
+        for(i = 1;i<y.length;i++)                    
+            text = text + ' ' + y[i].innerText + ',';
+        document.getElementById('tags').value = text
+    }
+
+    function setTag() {
+        var x = document.getElementById('list');
+                    y = x.childNodes
+                    var z=[];
+                    for(i = 1;i<y.length;i++) {
+                        z.push(y[i].innerText);
+                        text = text + ' ' + y[i] + ', '
+                    }
+                    document.getElementById('tags').value = text
+                    console.log(text)
+    }
+
+    $(function() {
+                $('#button').click(function() {
+                    console.log("we made it");
+                    var x = document.getElementById('list');
+                    y = x.childNodes
+                    var z=[];
+                    var text = '';
+                    for(i = 1;i<y.length;i++) {
+                        z.push(y[i].innerText);
+                        text = text + ' ' + y[i].innerText + ', '
+                    }
+                    console.log(text)
+                   
+                    $.ajax({
+                        type: 'POST',
+                        url: "/requestor" ,                       
+                        data : {'tags':z}
+                    });
+                    console.log("we here");
+                });
+            });
+</script>
+{% endblock %}
+
 {% endblock %}

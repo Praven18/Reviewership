@@ -1,9 +1,113 @@
 {% extends "base.html" %}
 
+{% block head %}
+    {{super()}}
+    <link rel="stylesheet" href="{{ url_for('static', filename='/css/home.css') }}">
+{% endblock %}
+
 {% block content %}
-<p>Hello, {{user.first_name}}! You're logged in! Email: {{user.email}}</p>
-            <div><p>Google Profile Picture:</p>
-            <img src="{{user.profile_pic}}" alt="Google profile pic"></img></div>
-            <a class="button" href="/logout">Logout</a>
+
+<div class="container mt-3">
+    <div class="row">
+       
+        <div class="col-sm-4">
+            <!--Nested rows within a column-->
+            <div class="row">
+                <div class="col-12">
+                    <div class="sidebar-content">do something
+                        {% for review in received_reviews %}
+                            <div class = "card">
+                                <p class ="title">{{review.title}}</p>
+                                <p class ="name">{{review.requestor_name}}</p>
+                                <p class ="date">Date Proposed: {{review.date}}</p>
+                                <button type="sumbit" class="btn test"  id = '{{review.id}}'> Accept</button>
+                                <button type="sumbit" class="btn"  onclick="openForm(this.id)" id = '{{review.id}}'> Propose</button>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12">
+                    <div class="sidebar-content">wait
+                        {% for review in proposed_reviews %}
+                        <div class = card>
+                            <p class ="title">{{review.title}}</p>
+                            <p class ="name">{{review.requestor_name}}</p>
+                            <p class ="date">{{review.date}}</p>
+                            <button type="sumbit" class="btn"  id = '{{review.id}}'> Accept</button>
+                        </div>
+                    {% endfor %}
+                    </div>
+                </div>
+               
+            </div>
+        </div> 
+        <div class="col-sm-4">
+            <div class="main-content">
+                {% for review in progress_reviews %}
+                <div class = card>
+                    <p class ="title">{{review.title}}</p>
+                    <p class ="name">{{review.requestor_name}}</p>
+                    <p class ="date">{{review.date}}</p>
+                    <button type="sumbit" class="btn"  id = '{{review.id}}'> complete</button>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        <div class="col-sm-4">
+            <div class="main-content">main</div>
+        </div>
+    </div>
+    <form id = "dateForm" action="" method="POST" novalidate>
+        <div id ="num">
+            {{ forms.hidden_tag() }}
+            <h2 style="font-size:20px; text-align:center">Select a date</h2>
+            {{forms.date}} <br>
+            {{forms.submit(class_="btn")}}
+           
+            <button type="button" class="btn" onclick="closeForm()">CANCEL</button> <br>
+            {{forms.id}}
+        </div>
+    </form>
+</div>
+
+{% block script %}
+<script>
+    
+
+     function openForm(id) {
+                //id = id 
+                document.getElementById("dateForm").style.display = "block";
+                /*document.getElementById("submit").setAttribute("id", id)*/
+                z = document.getElementById(id);
+                document.getElementById("id").value = id
+                var x = document.getElementById(id).parentElement.offsetTop
+                var y = document.getElementById(id).offsetLeft
+                console.log(id + ' ' + x + ' ' + y)
+                document.getElementById("dateForm").style.top = (x + 150)
+                document.getElementById("dateForm").style.left = y
+    }
+
+        $(function () {
+        $('#datepick').datetimepicker(); 
             
+        });
+        
+        $(function() {
+                $('.test').click(function() {
+                     console.log(this);
+                    id = this.id
+                    console.log(id);
+                   
+                    $.ajax({
+                        type: 'POST',
+                        url: "/home" ,                       
+                        data : {'id':id}
+                    });
+                    console.log("we here");
+                });
+            });
+</script>
+{% endblock %}
 {% endblock %}

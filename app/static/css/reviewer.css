@@ -1,6 +1,100 @@
-.card {
-    border-style: solid;
-    border-color: coral;
-    height: 172px;
-    width: 344px;
+
+
+p {
+    margin-left: 10px;
+}
+.title {
+    font-size: 20px;
+    font-weight: 600;
+    letter-spacing: .015px;
+    margin-bottom: 5px;
+}
+
+.name {
+    font-size: 16px;
+    font-weight: 500;
+
+}
+
+.date {
+    font-size: 16px;
+    font-weight: 500;
+}
+
+.main_content {
+    background-color: violet;
+    width: 90%;
+}
+
+#side_content {
+    position: fixed;
+    background-color: cornflowerblue;
+    bottom: 0;
+    right: 0;
+    height: 80%;
+    width: 0px;
+    transition: 0.5s;
+    z-index: 1;
+    overflow: hidden;
+}
+
+#dateForm  {
+    display: none;
+    position: absolute;
+    height: 150px;
+    width: 200px;
+    top: 50%;
+    left: 50%;
+    font-family: 'Roboto', sans-serif;
+    background-color: white;
+}
+
+.container {
+    margin-left: 0em;
+    margin-right: 0em;
+}
+
+#id {
+    display: none;
+}
+
+.accept {
+    background: none;
+    border: none;
+    color: #2F80ED;
+    font-size: 22px;
+    font-weight: 500;
+}
+
+.btn {
+    float: left;
+    margin: auto;
+    color: #2F80ED;
+    padding-top: 15px;
+    padding-right: 20px;
+    font-size: 16px;
+    font-weight: 500;
+    background: none;
+    border:none;
+    width: 86px;
+}
+
+#num {
+    position: relative;
+    margin: 10px 10px 10px 10px;
+}
+
+.pic {
+    border-radius: 50%;
+    width:50px;
+    height: 50px;
+    position: absolute;
+    right: 25px;
+    top: 10px;
+}
+
+.tags {
+   color: #2F80ED;
+   font-size: 20px;
+   font-weight: 500;
 }

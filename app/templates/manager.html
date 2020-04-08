@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block head %}
+    {{super()}}
+    <link rel="stylesheet" href="{{ url_for('static', filename='/css/manager.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    {% for user in users %}
+        <div class="row user" id ="{{user.id}}" onclick="openSide(this.id)">
+            <div class="col-md-12 test">
+                <div class="col-md-1">
+                    <img src="{{user.profile_pic}}" class = "pic">
+                </div>
+                <div class="col-md-11">
+                    <p class=>{{user.first_name}}</p>
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+</div>
+
+<div id="side_content">
+
+</div>
+
+{% block script %}
+<script>
+    $(document).ready(function(){
+        $(".user").each(function(){
+            $.get('/numReviews', {'id':this.id}, function(data){
+              
+                if(data['count'] >= data['num']) {  
+                    console.log(data['id'])
+                    document.getElementById(data['id']).style.backgroundColor = "white";
+                }
+            });
+        });
+    });
+</script>
+{% endblock %}
+
+{% endblock %}

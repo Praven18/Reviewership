@@ -10,9 +10,12 @@ from flask_login import (
     login_user,
     logout_user,
 )
+from sqlalchemy import or_
 from app.models import User, Review
-from app.forms import CreateForm
+from app.forms import CreateForm, DateForm
 from app import db, login_manager
+import datetime
+
 #from app import app
 
 
@@ -57,10 +60,21 @@ def index():
         return render_template('index.html')
         #return '<a class="button" href="/login">Google Login</a>'
 
-@app.route("/home")
-def home():
+@app.route("/home", methods=['GET', 'POST'])
+def home(): 
+    forms = DateForm()
+    if request.method== 'POST':
+        id = request.form['id']
+        Review.accept_review(id)
+    proposed_reviews = Review.query.order_by(Review.id).filter(Review.status==2).filter(or_(Review.requestor == current_user.id, Review.reviewer == current_user.id)).filter(Review.last_changed == current_user.id)
+    received_reviews = Review.query.order_by(Review.id).filter(Review.status==2).filter(or_(Review.requestor == current_user.id, Review.reviewer == current_user.id)).filter(Review.last_changed != current_user.id)
+    progress_reviews = Review.query.order_by(Review.id).filter(Review.status==3).filter(or_(Review.requestor == current_user.id, Review.reviewer == current_user.id))
+    if forms.validate_on_submit:
+        print('8888888888888888888888888888888888888888888888888')
     user = {'first_name': current_user.first_name, 'email': current_user.email, 'profile_pic': current_user.profile_pic}
-    return render_template('home.html', user=user)
+  
+   
+    return render_template('home.html', user=user, forms=forms,proposed_reviews=proposed_reviews, received_reviews=received_reviews, progress_reviews=progress_reviews)
 
 @app.route("/login")
 def login():
@@ -95,13 +109,19 @@ def callback():
         redirect_url=request.base_url,
         code=code,
     )
+
+    print('+++++++++++++++++++++++++++')
+    #print(client.prepare_token_request(token_endpoint,authorization_response=request.url,redirect_url=request.base_url,code=code,)
+    print(token_url)
+    print(headers)
+    print(body)
     token_response = requests.post(
         token_url,
         headers=headers,
         data=body,
         auth=(GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET),
     )
-
+    print(token_response)
     # Parse the tokens!
     client.parse_request_body_response(json.dumps(token_response.json()))
 
@@ -127,7 +147,7 @@ def callback():
     # Create a user in our db with the information provided
     # by Google
     user = User(
-        id=_id, first_name=f_name, last_name = l_name, email=_email, profile_pic=_picture
+        id=_id, first_name=f_name, last_name = l_name, email=_email, profile_pic=_picture, rank=1, num_of_reviews=3
     )
 
     # Doesn't exist? Add to database
@@ -137,7 +157,7 @@ def callback():
         db.session.commit()
 
     # Begin user session by logging the user in
-    login_user(user)
+    login_user(user, remember=True)
 
     # Send user back to homepage
 
@@ -152,26 +172,113 @@ def logout():
 
 @app.route("/requestor", methods=['GET', 'POST'])
 def requestor():
-    form = CreateForm()
-    if form.validate_on_submit():
-        review = Review(title=form.title.data, description=form.description.data, biling=form.biling.data, status = 1, requestor = current_user.id, requestor_name=User.get_name(current_user.id), date= form.date.value)
-        #db.session.add(review)
-        #db.session.commit()
+    cform = CreateForm()
+    if cform.validate_on_submit():
+        print(current_user.first_name)
+        review = Review(title=cform.title.data, description=cform.description.data, biling=cform.biling.data, status = 1, requestor = current_user.id, requestor_name=User.get_name(current_user.id), date = datetime.datetime.now(), pic=current_user.profile_pic)
+        db.session.add(review)
+        db.session.commit()       
+        tags=cform.tags.data
+        print(tags)
+        tag_list=tags.split(',')
+        print('4444444444444444')
+        print(tag_list)
+        Review.setTags(tag_list,review.id)
         print('good')
     else:
         print('bad')
         
-    return render_template('requestor.html', form=form)
+    return render_template('requestor.html', cform=cform)
 
 @app.route("/reviewer", methods=['GET', 'POST'])
 def reviewer():
-    #reviews = db.session.query(Review).order_by(Review.id).all()
-    reviews = Review.query.order_by(Review.id).all()
-    print('####################') 
+    reviews = Review.query.order_by(Review.id).filter(Review.status==1)
     print(reviews)
-    print('###################')
-    print('####################')
-    return render_template('reviewer.html', reviews=reviews)
+    form = DateForm()
+    if form.validate_on_submit():
+        print('+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++')
+        print(form.date.data)
+        #id = request.data
+        print(form.id.data)
+        print(form.submit)
+        print('+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++')
+        Review.change_status(2,form.id.data,current_user.id,User.get_name(current_user.id),form.date.data)
+    return render_template('reviewer.html', reviews=reviews, form=form, rank=current_user.rank)
+
+@app.route("/admin", methods=['GET', 'POST'])
+def admin():
+    if(current_user.rank != 4):
+        return render_template('sorry.html')
+    users = User.query.order_by(User.id)
+    print('11111111111111111111111111111')
+    print(request.form)
+    return render_template('admin.html', users=users)
+
+@app.route("/user", methods=['GET'])
+def user():
+    print('444444444444444444444444444444444')
+    id = request.args['id']
+    print(id)
+    rank = {'rank': User.get_rank(id)}
+    
+    return rank
+
+@app.route("/rank", methods=['GET', 'POST'])
+def rank():
+    id = request.form['id']
+    rank = request.form['role']
+    checked = request.form['checked']
+    print(id)
+    print(rank)
+    print(checked)
+    if(rank=='reviewer'):
+        print('same')
+    else:
+        print('not same')
+
+    if(checked==1):
+        print('same')
+    else:
+        print('not same')
+
+    if(rank=='reviewer'):
+        if(checked=='1'):
+            User.setRank(id,2)        
+        else:
+            User.setRank(id,1)          
+    elif(rank=='manager'):
+        if(checked=='1'):
+            User.setRank(id,3)
+        else:
+            User.setRank(id,2)
+    elif(rank=='admin'):
+        if(checked == '1'):
+            User.setRank(id,4)
+        else:
+            User.setRank(id,3)
+    return '1'
+
+@app.route("/manager")
+def manager():
+    print('777777777777777777777777')
+    print(current_user.rank)
+    if(current_user.rank < 3):
+        return render_template('stop_error.html')
+    users = User.query.order_by(User.id)
+    return render_template('manager.html', users=users)
+
+@app.route("/numReviews", methods=['GET'])
+def numReviews():
+    count = 0
+    id = request.args['id']
+    user = User.get(id)
+    for reviews in db.session.query(Review).filter(or_(Review.requestor == id, Review.reviewer == id)):
+        count = count + 1
+    data = {'count': count, 'num':user.num_of_reviews, 'id':id}
+    return data
+
+    
+   
 
 def get_google_provider_cfg():
     return requests.get(GOOGLE_DISCOVERY_URL).json()

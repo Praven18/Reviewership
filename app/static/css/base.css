@@ -1,0 +1,16 @@
+body {
+    background-color: #F8F8F8 !important;
+}
+
+.card {
+    border-style: solid;
+    border-width: thin;
+    border-color: white;
+    height: 172px;
+    font-family: 'Roboto', sans-serif;
+    background-color:  white;
+    padding: 3px;
+    border-radius: 13px;
+    margin-bottom: 10px;
+    max-width: 400px;
+}
