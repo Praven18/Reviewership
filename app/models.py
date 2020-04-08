@@ -55,6 +55,7 @@ class Review(db.Model):
     Reviewer Name:     The name of the reviewer 
     last changed:      Stores the id of the person who last proposed the date
     tags:              Tags on Review
+    tagString:         The String format of tags
     """   
 
     id = db.Column(db.Integer, index=True, unique=True,primary_key=True)
@@ -70,6 +71,7 @@ class Review(db.Model):
     reviewer_name = db.Column(db.String, nullable=True)
     last_changed = db.Column(db.String, nullable=True)
     tags = db.relationship('reviewTags', back_populates='review')
+    tagString = db.Column(db.String, nullable=True)
 
     def __repr__(self):
         return '<Review {}>'.format([self.id,self.title,self.description,self.biling,self.status,self.date,self.requestor,self.requestor_name,self.reviewer,self.reviewer_name])
@@ -97,7 +99,8 @@ class Review(db.Model):
     def setTags(tags, id):
         for tag in tags:
             print('777777777777777777777777')
-            print(tag)
+            print(tag.strip(','))
+            tag = tag.strip(',')
             exist = Tag.query.filter_by(tag=tag).first()
             if exist == None:
                 new_tag = Tag(tag=tag)
@@ -106,6 +109,15 @@ class Review(db.Model):
             review_tag = reviewTags(review_id=id,tag_id=exist.id) 
             db.session.add(review_tag)
             db.session.commit()
+            Review.setTagString(id)
+
+    def setTagString(id):
+        text = ""
+        for tag in db.session.query(reviewTags).filter(reviewTags.review_id == id):
+            text = text + '    ' + Tag.tagValue(tag.tag_id)
+        review = Review.get(id)
+        review.tagString = text
+        db.session.commit()
         
 
 class Tag(db.Model):
@@ -117,7 +129,11 @@ class Tag(db.Model):
     review = db.relationship('reviewTags', back_populates='tag')
 
     def __repr__(self):
-        return '<Note: {}>'.format(self.tag)
+        return '<Tag: {}>'.format([self.id, self.tag])
+
+    def tagValue(id):
+        tag = db.session.query(Tag).filter(Tag.id==id).first()
+        return tag.tag
 
 class reviewTags(db.Model):
     """

@@ -57,7 +57,7 @@
         ul.appendChild(li);
         var text='';
         for(i = 1;i<y.length;i++)                    
-            text = text + ' ' + y[i].innerText + ' ';
+            text = text + ' ' + y[i].innerText + ',';
         document.getElementById('tags').value = text
     }
 
@@ -67,7 +67,7 @@
                     var z=[];
                     for(i = 1;i<y.length;i++) {
                         z.push(y[i].innerText);
-                        text = text + ' ' + y[i] + ' '
+                        text = text + ' ' + y[i] + ', '
                     }
                     document.getElementById('tags').value = text
                     console.log(text)

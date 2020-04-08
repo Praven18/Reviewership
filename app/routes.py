@@ -57,6 +57,7 @@ def index():
             #)
         #)
     else:
+        Review.setTagString(1)
         return render_template('index.html')
         #return '<a class="button" href="/login">Google Login</a>'
 
@@ -179,7 +180,10 @@ def requestor():
         db.session.add(review)
         db.session.commit()       
         tags=cform.tags.data
-        tag_list=tags.split()
+        print(tags)
+        tag_list=tags.split(',')
+        print('4444444444444444')
+        print(tag_list)
         Review.setTags(tag_list,review.id)
         print('good')
     else:
