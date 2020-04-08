@@ -8,18 +8,123 @@
 {% block content %}
 <div class="container">
     {% for user in users %}
-        <div class="row">
+        <div class="row user" id ="{{user.id}}" onclick="openSide(this.id)">
             <div class="col-md-12 test">
-                <p>{{user.first_name}}</p>
+                <div class="col-md-1">
+                    <img src="{{user.profile_pic}}" class = "pic">
+                </div>
+                <div class="col-md-11">
+                    <p class=>{{user.first_name}}</p>
+                </div>
             </div>
         </div>
     {% endfor %}
 </div>
 
-<div class="side_content">
-    <label class="switch">
-        <input type="checkbox">
-        <span class="slider round"></span>
-      </label>
+<div id="side_content">
+    <div class = "row">
+        <div class="col-md-1">
+            <p>Reviewer</p>
+        </div>
+    <div class="col-md-11">
+        <label  class="switch">
+            <input type="checkbox" id ="reviewer" class="role">
+            <span class="slider round"></span>
+        </label>
+    </div>
+    </div>
+
+    <div class = "row">
+        <div class="col-md-1">
+            <p>Manager</p>
+        </div>
+    <div class="col-md-11">
+        <label  class="switch">
+            <input type="checkbox" id ="manager" class="role">
+            <span class="slider round"></span>
+        </label>
+    </div>
+    </div>
+
+    <div class = "row">
+        <div class="col-md-1">
+            <p>Admin</p>
+        </div>
+    <div class="col-md-11">
+        <label  class="switch">
+            <input type="checkbox" id ="admin" class="role">
+            <span class="slider round"></span>
+        </label>
+    </div>
+    </div>
 </div>
+
+{% block script %}
+<script>
+    function openSide(id) {
+        document.getElementById("side_content").style.width = "20%";
+        document.getElementById("side_content").firstElementChild.setAttribute("id",id)
+        console.log("type of")
+        console.log(typeof id)
+        console.log(id)
+    }
+
+    $(function() {
+            $('.role').change(function() {
+                var checked;
+                if($(this).is(':checked')){
+                        checked = 1   
+                } else {
+                        checked = 0
+                }
+
+                id = document.getElementById("side_content").firstElementChild.id
+                    console.log("this is id")
+                    console.log(id)
+                $.ajax({
+                    type: 'POST',
+                    url: "/rank" ,                       
+                    data : {'id': id, 'role':this.id,'checked':checked}
+                    });
+                });
+            });
+
+    $(document).mousedown(function (e) {
+    var container = $("#side_content");
+    console.log("we here");
+    if (!container.is(e.target) // if the target of the click isn't the container...
+        && container.has(e.target).length === 0) // ... nor a descendant of the container
+    {
+       if($("#side_content").width() != 0 )
+            {
+                container.width(0);
+            }
+    }
+  });
+
+  $(function() {
+            $('.user').click(function() {
+                    console.log(this.id);
+                    var x = this.id
+                    $.get('/user', {id: x}, function(data){ console.log(data)
+
+                    console.log(typeof data)
+                    console.log(data['rank'])
+                        if (data['rank'] == '4') {
+                            $("#reviewer").prop("checked",true) 
+                            $("#manager").prop("checked",true)
+                            $("#admin").prop("checked",true)
+                        } if (data['rank'] == '3') {
+                            $("#reviewer").prop("checked",true)
+                            $("#manager").prop("checked",true)
+                        } if (data['rank']=='2') {
+                            $("#reviewer").prop("checked",true)
+                        }
+                    })
+
+                });
+            });
+</script>
+{% endblock %}
+
 {% endblock %}

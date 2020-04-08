@@ -57,7 +57,6 @@ def index():
             #)
         #)
     else:
-        Review.setTagString(1)
         return render_template('index.html')
         #return '<a class="button" href="/login">Google Login</a>'
 
@@ -148,7 +147,7 @@ def callback():
     # Create a user in our db with the information provided
     # by Google
     user = User(
-        id=_id, first_name=f_name, last_name = l_name, email=_email, profile_pic=_picture
+        id=_id, first_name=f_name, last_name = l_name, email=_email, profile_pic=_picture, rank=1
     )
 
     # Doesn't exist? Add to database
@@ -209,7 +208,54 @@ def reviewer():
 @app.route("/admin", methods=['GET', 'POST'])
 def admin():
     users = User.query.order_by(User.id)
+    print('11111111111111111111111111111')
+    print(request.form)
     return render_template('admin.html', users=users)
+
+@app.route("/user", methods=['GET'])
+def user():
+    print('444444444444444444444444444444444')
+    id = request.args['id']
+    print(id)
+    rank = {'rank': User.get_rank(id)}
+    
+    return rank
+
+@app.route("/rank", methods=['GET', 'POST'])
+def rank():
+    id = request.form['id']
+    rank = request.form['role']
+    checked = request.form['checked']
+    print(id)
+    print(rank)
+    print(checked)
+    if(rank=='reviewer'):
+        print('same')
+    else:
+        print('not same')
+
+    if(checked==1):
+        print('same')
+    else:
+        print('not same')
+
+    if(rank=='reviewer'):
+        if(checked=='1'):
+            User.setRank(id,2)        
+        else:
+            User.setRank(id,1)          
+    elif(rank=='manager'):
+        if(checked=='1'):
+            User.setRank(id,3)
+        else:
+            User.setRank(id,2)
+    elif(rank=='admin'):
+        if(checked == '1'):
+            User.setRank(id,4)
+        else:
+            User.setRank(id,3)
+    return '1'
+
 
 @app.route("/accept", methods=['GET', 'POST'])
 def accept():
@@ -217,6 +263,17 @@ def accept():
     #Review.change_status(2,id)
     print(id)
     print('###########################################')
+
+@app.route("/manager")
+def manager():
+    print('777777777777777777777777')
+    print(current_user.rank)
+    if(current_user.rank < 3):
+        return render_template('stop_error.html')
+    users = User.query.order_by(User.id)
+    return render_template('index.html')
+
+
 
 
     

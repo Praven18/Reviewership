@@ -14,13 +14,14 @@ class User(UserMixin, db.Model):
         Last name:     The user's last name
         email:         The user email address
         profile pic:   The user pic
-       
+       rank:           The user's rank. 1-able to request reviews|2-able to accept reviews|3-manager|4-admin
     """
     id = db.Column(db.String, primary_key=True)
     first_name = db.Column(db.String, index=True)
     last_name = db.Column(db.String, index=True)
     email = db.Column(db.String, index=True, unique=True)
     profile_pic = db.Column(db.String, index=True)
+    rank = db.Column(db.Integer)
 
     def __repr__(self):
         return '<User {}>'.format([self.id,self.first_name,self.last_name,self.email,self.profile_pic])
@@ -36,6 +37,16 @@ class User(UserMixin, db.Model):
         user = User.get(uid)
         return user.first_name + ' ' + user.last_name
     
+    def get_rank(id):
+        user = User.get(id)
+        print(user)
+        return user.rank
+
+    def setRank(id, rank):
+        user = User.get(id)
+        user.rank = rank
+        db.session.commit()
+
 class Review(db.Model):
     """
     Code Review Request Model
