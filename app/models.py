@@ -9,12 +9,13 @@ class User(UserMixin, db.Model):
     UserMixin
     db.Model
     Attributes:
-        id:            The unique user identifier
-        First name:    The user's first name
-        Last name:     The user's last name
-        email:         The user email address
-        profile pic:   The user pic
-       rank:           The user's rank. 1-able to request reviews|2-able to accept reviews|3-manager|4-admin
+        id:             The unique user identifier
+        First name:     The user's first name
+        Last name:      The user's last name
+        email:          The user email address
+        profile pic:    The user pic
+        rank:           The user's rank. 1-able to request reviews|2-able to accept reviews|3-manager|4-admin
+        num_of_reviews: The amount of reviews needed by the user
     """
     id = db.Column(db.String, primary_key=True)
     first_name = db.Column(db.String, index=True)
@@ -22,6 +23,7 @@ class User(UserMixin, db.Model):
     email = db.Column(db.String, index=True, unique=True)
     profile_pic = db.Column(db.String, index=True)
     rank = db.Column(db.Integer)
+    num_of_reviews = db.Column(db.Integer)
 
     def __repr__(self):
         return '<User {}>'.format([self.id,self.first_name,self.last_name,self.email,self.profile_pic])
@@ -45,6 +47,16 @@ class User(UserMixin, db.Model):
     def setRank(id, rank):
         user = User.get(id)
         user.rank = rank
+        """
+            please delete this later
+        """
+        if(rank==1):
+            user.num_of_reviews = 3
+        elif(rank==2):
+            user.num_of_reviews = 2
+        else:
+            user.num_of_reviews = 1
+
         db.session.commit()
 
 class Review(db.Model):

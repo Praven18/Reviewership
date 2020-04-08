@@ -15,8 +15,11 @@
                             <p class ="date">Created on: {{review.date|date_filter}}</p>
                             <img src = "{{review.pic}}" class=pic>
                             <p class>Tags: <span class="tags">{{review.tagString}}</span></p>
-                            <button type="sumbit" class="accept" onclick="openForm(this.id)" id = '{{review.id}}'> Accept</button>
                             <p hidden class="des">{{review.description}}</p>
+                            {% if rank > 1 %}
+                            <button type="sumbit" class="accept" onclick="openForm(this.id)" id = '{{review.id}}'> Accept</button>
+                            {% endif %}
+                            
                             
                                 
                            

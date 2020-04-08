@@ -3,6 +3,10 @@
     margin-left: 0px;
 }
 
+.user {
+  margin-bottom: 10px;
+}
+
 .pic {
     position: relative;
     height: 50px;

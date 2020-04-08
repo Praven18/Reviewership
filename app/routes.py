@@ -147,7 +147,7 @@ def callback():
     # Create a user in our db with the information provided
     # by Google
     user = User(
-        id=_id, first_name=f_name, last_name = l_name, email=_email, profile_pic=_picture, rank=1
+        id=_id, first_name=f_name, last_name = l_name, email=_email, profile_pic=_picture, rank=1, num_of_reviews=3
     )
 
     # Doesn't exist? Add to database
@@ -203,10 +203,12 @@ def reviewer():
         print(form.submit)
         print('+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++')
         Review.change_status(2,form.id.data,current_user.id,User.get_name(current_user.id),form.date.data)
-    return render_template('reviewer.html', reviews=reviews, form=form)
+    return render_template('reviewer.html', reviews=reviews, form=form, rank=current_user.rank)
 
 @app.route("/admin", methods=['GET', 'POST'])
 def admin():
+    if(current_user.rank != 4):
+        return render_template('sorry.html')
     users = User.query.order_by(User.id)
     print('11111111111111111111111111111')
     print(request.form)
@@ -256,14 +258,6 @@ def rank():
             User.setRank(id,3)
     return '1'
 
-
-@app.route("/accept", methods=['GET', 'POST'])
-def accept():
-    id = request.form
-    #Review.change_status(2,id)
-    print(id)
-    print('###########################################')
-
 @app.route("/manager")
 def manager():
     print('777777777777777777777777')
@@ -271,10 +265,17 @@ def manager():
     if(current_user.rank < 3):
         return render_template('stop_error.html')
     users = User.query.order_by(User.id)
-    return render_template('index.html')
+    return render_template('manager.html', users=users)
 
-
-
+@app.route("/numReviews", methods=['GET'])
+def numReviews():
+    count = 0
+    id = request.args['id']
+    user = User.get(id)
+    for reviews in db.session.query(Review).filter(or_(Review.requestor == id, Review.reviewer == id)):
+        count = count + 1
+    data = {'count': count, 'num':user.num_of_reviews, 'id':id}
+    return data
 
     
    
