@@ -206,6 +206,11 @@ def reviewer():
         Review.change_status(2,form.id.data,current_user.id,User.get_name(current_user.id),form.date.data)
     return render_template('reviewer.html', reviews=reviews, form=form)
 
+@app.route("/admin", methods=['GET', 'POST'])
+def admin():
+    users = User.query.order_by(User.id)
+    return render_template('admin.html', users=users)
+
 @app.route("/accept", methods=['GET', 'POST'])
 def accept():
     id = request.form

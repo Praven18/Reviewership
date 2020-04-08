@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block head %}
+    {{super()}}
+    <link rel="stylesheet" href="{{ url_for('static', filename='/css/admin.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    {% for user in users %}
+        <div class="row">
+            <div class="col-md-12 test">
+                <p>{{user.first_name}}</p>
+            </div>
+        </div>
+    {% endfor %}
+</div>
+
+<div class="side_content">
+    <label class="switch">
+        <input type="checkbox">
+        <span class="slider round"></span>
+      </label>
+</div>
+{% endblock %}

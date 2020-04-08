@@ -1,0 +1,14 @@
+.container {
+    background-color: indigo;
+    margin-left: 0px;
+    
+}
+
+.side_content {
+    position: fixed;
+    background-color: cornflowerblue;
+    bottom: 0;
+    right: 0;
+    height: 80%;
+    width: 20%;
+}
