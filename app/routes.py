@@ -11,7 +11,7 @@ from flask_login import (
     logout_user,
 )
 from sqlalchemy import or_
-from app.models import User, Review
+from app.models import User, Review, Teams
 from app.forms import CreateForm, DateForm
 from app import db, login_manager
 import datetime
@@ -47,7 +47,7 @@ def index():
     if current_user.is_authenticated:
         #return (
 
-
+        User.addToTeam('109651862078448085401', None)
         return render_template('index.html')
             #"<p>Hello, {}! You're logged in! Email: {}</p>"
             #"<div><p>Google Profile Picture:</p>"
@@ -57,6 +57,7 @@ def index():
             #)
         #)
     else:
+        User.addToTeam('109651862078448085401', None)
         return render_template('index.html')
         #return '<a class="button" href="/login">Google Login</a>'
 
@@ -207,16 +208,13 @@ def reviewer():
 
 @app.route("/admin", methods=['GET', 'POST'])
 def admin():
-    if(current_user.rank != 4):
-        return render_template('sorry.html')
+    #if(current_user.rank != 4):
+        #return render_template('sorry.html')
     users = User.query.order_by(User.id)
-    print('11111111111111111111111111111')
-    print(request.form)
     return render_template('admin.html', users=users)
 
 @app.route("/user", methods=['GET'])
 def user():
-    print('444444444444444444444444444444444')
     id = request.args['id']
     print(id)
     rank = {'rank': User.get_rank(id)}
@@ -260,12 +258,11 @@ def rank():
 
 @app.route("/manager")
 def manager():
-    print('777777777777777777777777')
-    print(current_user.rank)
-    if(current_user.rank < 3):
-        return render_template('stop_error.html')
-    users = User.query.order_by(User.id)
-    return render_template('manager.html', users=users)
+   # if(current_user.rank < 3):
+    #    return render_template('stop_error.html')
+    your_users = User.query.order_by(User.id).filter(User.rank < 4).filter(User.team == current_user.team)
+    teamless_users = User.query.order_by(User.id).filter(User.rank < 4).filter(User.team == None)
+    return render_template('manager.html', your_users=your_users, teamless_users= teamless_users)
 
 @app.route("/numReviews", methods=['GET'])
 def numReviews():
@@ -276,6 +273,37 @@ def numReviews():
         count = count + 1
     data = {'count': count, 'num':user.num_of_reviews, 'id':id}
     return data
+
+@app.route("/teams", methods=['GET', 'POST'])
+def teams():
+    if request.method == 'POST':
+        if (request.form['data'] == None):
+            print('888888888888888888888888888888888\nnonedetected')
+            return '1'
+        exists = db.session.query(Teams.team).filter_by(team=request.form['data']).scalar() is not None
+        if not exists:
+            team = Teams()
+            team.team = request.form['data']
+            db.session.add(team)
+            db.session.commit()
+        else:
+            User.addToTeam(request.form['id'], request.form['data'])
+
+        return '1'
+    
+    if request.method == 'GET':
+        teamList = Teams.teamList()
+        teams = {} 
+        x = 0
+        for i in teamList:
+            teams[x] = str(teamList[x])
+            x = x + 1
+        return teams 
+
+
+@app.route("/test")
+def test():
+    return render_template('test.html')
 
     
    

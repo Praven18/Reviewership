@@ -24,6 +24,7 @@ class User(UserMixin, db.Model):
     profile_pic = db.Column(db.String, index=True)
     rank = db.Column(db.Integer)
     num_of_reviews = db.Column(db.Integer)
+    team = db.Column(db.String, nullable=True)
 
     def __repr__(self):
         return '<User {}>'.format([self.id,self.first_name,self.last_name,self.email,self.profile_pic])
@@ -57,6 +58,11 @@ class User(UserMixin, db.Model):
         else:
             user.num_of_reviews = 1
 
+        db.session.commit()
+    
+    def addToTeam(id, team):
+        user = User.get(id)
+        user.team = team
         db.session.commit()
 
 class Review(db.Model):
@@ -168,5 +174,30 @@ class reviewTags(db.Model):
     tag_id = db.Column(db.Integer, db.ForeignKey(Tag.id), primary_key=True)
     tag = db.relationship('Tag',back_populates='review')
     
+class Teams(db.Model):
+    """
+    So the purpose of this table is to keep track of teams. I think there is an easier way to do this but idk what it is.
+    this table is only here to give a list of teams to the route team so that a dropdown menu in admin apge can be filled
 
+    I figured it out... you use this to add people to multiple teams
 
+    """
+    team = db.Column(db.String, primary_key=True)
+
+    def __repr__(self):
+        return '{}'.format(self.team)
+
+    def teamList():
+        teams = []
+        for team in db.session.query(Teams):
+            print(team)
+            teams.append(team)
+        print(teams)
+        print(len(teams))
+        return teams
+    
+    def addTeam(text):
+        team = Teams()
+        team.team = text
+        db.session.add(team)
+        db.session.commit()

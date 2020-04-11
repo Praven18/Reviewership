@@ -6,6 +6,9 @@
 {% endblock %}
 
 {% block content %}
+<div id = "border">
+
+</div>
 <div class="container">
     {% for user in users %}
         <div class="row user" id ="{{user.id}}" onclick="openSide(this.id)">
@@ -23,10 +26,10 @@
 
 <div id="side_content">
     <div class = "row">
-        <div class="col-md-2">
+        <div class="col-md-3">
             <p>Reviewer</p>
         </div>
-    <div class="col-md-10">
+    <div class="col-md-9">
         <label  class="switch">
             <input type="checkbox" id ="reviewer" class="role">
             <span class="slider round"></span>
@@ -35,10 +38,10 @@
     </div>
 
     <div class = "row">
-        <div class="col-md-2">
+        <div class="col-md-3">
             <p>Manager</p>
         </div>
-    <div class="col-md-10">
+    <div class="col-md-9">
         <label  class="switch">
             <input type="checkbox" id ="manager" class="role">
             <span class="slider round"></span>
@@ -47,10 +50,10 @@
     </div>
 
     <div class = "row">
-        <div class="col-md-2">
+        <div class="col-md-3">
             <p>Admin</p>
         </div>
-    <div class="col-md-10">
+    <div class="col-md-9">
         <label  class="switch">
             <input type="checkbox" id ="admin" class="role">
             <span class="slider round"></span>
@@ -59,28 +62,71 @@
     </div>
 </div>
 
+    <div id = "teamForm">    
+        <h2>Enter a Team for Manager</h2>
+        <div class="teamListHolder">
+            <input id = "input" class="chosen-value" type="text" value="" placeholder="Type to filter">
+            <ul class="teamList" id = "teamList">
+            </ul>
+            <button class="btn" id = "add" onclick="addTeam()">ADD</button>
+            <button class = "btn" id = "close" onclick="closeForm()">CLOSE</button>
+        </div>
+    </div>
+
+
 {% block script %}
 <script>
-    function openSide(id) {
-        document.getElementById("side_content").style.width = "20%";
-        document.getElementById("side_content").firstElementChild.setAttribute("id",id)
-        console.log("type of")
-        console.log(typeof id)
-        console.log(id)
+    function addTeam() {
+        team = document.getElementById("input").value
+        id = document.getElementById("side_content").firstElementChild.id
+        $.post('/teams', {data: team, id:id}, function() {
+            ul = document.getElementById('teamList');
+            li = document.createElement("li")
+            li.appendChild(document.createTextNode(team));
+            ul.appendChild(li);
+            document.getElementById('teamForm').style.display = "none"
+            document.getElementById('border').style.display = "none"
+            $('#teamList').empty()
+        })
+
     }
 
+    function closeForm() {
+        (console.log('click'))
+        $("#manager").prop("checked",false)
+        document.getElementById('teamForm').style.display = "none"
+        document.getElementById('border').style.display = "none"
+        $('#teamList').empty()
+        
+    }
+
+    //changes rank of user by sending info to server
     $(function() {
             $('.role').change(function() {
+                console.log('a change happened')
                 var checked;
                 if($(this).is(':checked')){
                         checked = 1   
                 } else {
                         checked = 0
                 }
-
+                if(this.id == 'manager' && checked == 1) {
+                    $.get('/teams', function(data){
+                        for(i = 0; i < Object.keys(data).length; i++) {
+                            ul = document.getElementById('teamList');
+                            li = document.createElement("li")
+                            console.log(data[i])
+                            li.appendChild(document.createTextNode(data[i]));
+                            console.log(li)
+                            ul.appendChild(li);
+                            document.getElementById('teamForm').style.display = "block"
+                            messy();
+                            document.getElementById("border").style.display = "block"
+                        }
+                    })
+                    
+                }
                 id = document.getElementById("side_content").firstElementChild.id
-                    console.log("this is id")
-                    console.log(id)
                 $.ajax({
                     type: 'POST',
                     url: "/rank" ,                       
@@ -89,41 +135,130 @@
                 });
             });
 
+    //closes side document
     $(document).mousedown(function (e) {
     var container = $("#side_content");
+    var border = $("#border")
+    var form = $("#teamForm")
     console.log("we here");
     if (!container.is(e.target) // if the target of the click isn't the container...
         && container.has(e.target).length === 0) // ... nor a descendant of the container
     {
-       if($("#side_content").width() != 0 )
+        if (!border.is(e.target) // if the target of the click isn't the container...
+          && border.has(e.target).length === 0) // ... nor a descendant of the container
+        {
+            if (!form.is(e.target) // if the target of the click isn't the container...
+          && form.has(e.target).length === 0) // ... nor a descendant of the container
             {
-                container.width(0);
+             if($("#side_content").width() != 0 )
+             {
+                 container.width(0);
+                 $('#teamList').empty()
+              }
             }
+        }
     }
   });
 
+  //when user clicks on employee box, this will check the roles they are as well as open side_content
   $(function() {
             $('.user').click(function() {
                     console.log(this.id);
+                    document.getElementById("side_content").style.width = "20%";
+                    document.getElementById("side_content").firstElementChild.setAttribute("id",this.id)
                     var x = this.id
-                    $.get('/user', {id: x}, function(data){ console.log(data)
+                    $.get('/user', {id: x}, function(data){
 
-                    console.log(typeof data)
+                   
                     console.log(data['rank'])
-                        if (data['rank'] == '4') {
-                            $("#reviewer").prop("checked",true) 
+                        if (data['rank'] == '1') {
+                            $("#reviewer").prop("checked",false) 
+                            $("#manager").prop("checked",false)
+                            $("#admin").prop("checked",false)
+                        } else if (data['rank'] == '2') {
+                            $("#reviewer").prop("checked",true)
+                            $("#manager").prop("checked",false)
+                            $("#admin").prop("checked",false)
+                        } else if (data['rank']=='3') {
+                            $("#reviewer").prop("checked",true)
+                            $("#manager").prop("checked",true)
+                            $("#admin").prop("checked",false)
+                        } else if (data['rank']=='4') {
+                            $("#reviewer").prop("checked",true)
                             $("#manager").prop("checked",true)
                             $("#admin").prop("checked",true)
-                        } if (data['rank'] == '3') {
-                            $("#reviewer").prop("checked",true)
-                            $("#manager").prop("checked",true)
-                        } if (data['rank']=='2') {
-                            $("#reviewer").prop("checked",true)
                         }
                     })
 
                 });
             });
+
+// stuff for teamList
+function messy() {
+const inputField = document.querySelector('.chosen-value');
+const dropdown = document.querySelector('.teamList');
+const dropdownArray = [... document.querySelectorAll('li')];
+console.log(typeof dropdownArray)
+//dropdown.classList.add('open');
+inputField.focus(); // Demo purposes only
+let valueArray = [];
+dropdownArray.forEach(item => {
+  valueArray.push(item.textContent);
+});
+
+const closeDropdown = () => {
+  dropdown.classList.remove('open');
+}
+
+inputField.addEventListener('input', () => {
+  dropdown.classList.add('open');
+  let inputValue = inputField.value.toLowerCase();
+  let valueSubstring;
+  if (inputValue.length > 0) {
+    for (let j = 0; j < valueArray.length; j++) {
+      if (!(inputValue.substring(0, inputValue.length) === valueArray[j].substring(0, inputValue.length).toLowerCase())) {
+        dropdownArray[j].classList.add('closed');
+      } else {
+        dropdownArray[j].classList.remove('closed');
+      }
+    }
+  } else {
+    for (let i = 0; i < dropdownArray.length; i++) {
+      dropdownArray[i].classList.remove('closed');
+    }
+  }
+});
+
+dropdownArray.forEach(item => {
+  item.addEventListener('click', (evt) => {
+    inputField.value = item.textContent;
+    dropdownArray.forEach(dropdown => {
+      dropdown.classList.add('closed');
+    });
+  });
+})
+
+inputField.addEventListener('focus', () => {
+   inputField.placeholder = 'Type to filter';
+   dropdown.classList.add('open');
+   dropdownArray.forEach(dropdown => {
+     dropdown.classList.remove('closed');
+   });
+});
+
+inputField.addEventListener('blur', () => {
+   inputField.placeholder = 'Select Team';
+  dropdown.classList.remove('open');
+});
+
+document.addEventListener('click', (evt) => {
+  const isDropdown = dropdown.contains(evt.target);
+  const isInput = inputField.contains(evt.target);
+  if (!isDropdown && !isInput) {
+    dropdown.classList.remove('open');
+  }
+});
+}
 </script>
 {% endblock %}
 
