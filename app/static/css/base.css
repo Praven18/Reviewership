@@ -14,3 +14,7 @@ body {
     margin-bottom: 10px;
     max-width: 400px;
 }
+
+* {
+    font-family: 'Roboto', sans-serif;
+}
