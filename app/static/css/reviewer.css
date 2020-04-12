@@ -1,5 +1,3 @@
-
-
 p {
     margin-left: 10px;
 }
@@ -22,20 +20,62 @@ p {
 }
 
 .main_content {
-    background-color: violet;
+    /* background-color: violet;*/
     width: 90%;
+    top: 50;
+}
+
+.card {
+    box-shadow: 5px 5px 8px grey;
+    margin-bottom: 25px;
+    
 }
 
 #side_content {
     position: fixed;
-    background-color: cornflowerblue;
-    bottom: 0;
+    background-color: #64b5f6;
+    /*bottom: 0; */
+    top: 100;
     right: 0;
     height: 80%;
     width: 0px;
+    padding: 12px;
     transition: 0.5s;
     z-index: 1;
     overflow: hidden;
+}
+
+#side_title {
+    font-size: 25px;
+    font-weight: 600;
+    letter-spacing: .015px;
+    margin-bottom: 5px;
+}
+
+#side_subtitle {
+    font-size: 20px;
+    font-weight: 450;
+    letter-spacing: .015px;
+    margin-bottom: 10px;
+}
+
+#side_description, #side_tags {
+    font-size: 15px;
+    margin-bottom: 10px;
+}
+
+#side_date, #side_header {
+    font-size: 20px;
+    font-weight: 400;
+    letter-spacing: .015px;
+    margin-bottom: 10px;
+}
+
+#side_header {
+    font-size: 20px;
+    font-weight: 400;
+    letter-spacing: .015px;
+    margin-bottom: 5px;
 }
 
 #dateForm  {
@@ -60,10 +100,27 @@ p {
 
 .accept {
     background: none;
+    background-color: #64b5f6;
     border: none;
-    color: #2F80ED;
-    font-size: 22px;
-    font-weight: 500;
+    color: black;
+    border-radius: 14px;
+    font-size: 18px;
+    font-weight: 450;
+    margin-left: 8px;
+    transition-duration: 0.4s;
+}
+
+.accept:hover {
+    background: none;
+    background-color:none;
+    border: 1px solid;
+    border-color: #64b5f6;
+    color: black;
+    border-radius: 14px;
+    font-size: 18px;
+    font-weight: 450;
+    margin-left: 8px;
+    transition-duration: 0.4s;
 }
 
 .btn {
@@ -72,7 +129,7 @@ p {
     color: #2F80ED;
     padding-top: 15px;
     padding-right: 20px;
-    font-size: 16px;
+    font-size: 15px;
     font-weight: 500;
     background: none;
     border:none;
@@ -95,6 +152,6 @@ p {
 
 .tags {
    color: #2F80ED;
-   font-size: 20px;
-   font-weight: 500;
+   font-size: 15px;
+   font-weight: 200;
 }

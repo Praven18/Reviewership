@@ -51,8 +51,13 @@
         
     </div>
     <div id = "side_content">
-        <p id = "side_title">s</p> <br>
+        <p id = "side_title"></p> 
+        <p id = "side_subtitle"></p> 
+        <p id = "side_header">Description:</p>
         <p id = "side_description"></p>
+        <p id = "side_date"></p>
+        <p id = "side_header">Tags: <p id = "side_tags"></p></p>
+        
     </div>
     {% block script %}
     <script> 
@@ -103,7 +108,10 @@
         document.getElementById("side_content").style.width = "20%";
         console.log(card.querySelector(".des").innerText);
         document.getElementById("side_title").innerText = card.querySelector(".title").innerText;
+        document.getElementById("side_subtitle").innerText = card.querySelector(".name").innerText;
         document.getElementById("side_description").innerText = card.querySelector(".des").innerText;
+        document.getElementById("side_date").innerText = card.querySelector(".date").innerText;
+        document.getElementById("side_tags").innerText = card.querySelector(".tags").innerText;
     }
 
     $(document).mousedown(function (e) {
