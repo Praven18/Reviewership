@@ -4,7 +4,8 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='/css/reviewer.css') }}">
 {% endblock %}
 {% block content %}
-    <div class="container mt-3">
+    <h1>Open Reviews</h1>
+    <div class="container mt-3">    
         <div class = "row">
             <div class= "col-lg-9 main_content">
                  {% for review in reviews %}
@@ -17,7 +18,7 @@
                             <p class>Tags: <span class="tags">{{review.tagString}}</span></p>
                             <p hidden class="des">{{review.description}}</p>
                             {% if rank > 1 %}
-                            <button type="sumbit" class="accept" onclick="openForm(this.id)" id = '{{review.id}}'> Accept</button>
+                            <button type="sumbit" class="accept" onclick="openForm(this.id)" id = '{{review.id}}'>Accept</button>
                             {% endif %}
                             
                             
@@ -29,17 +30,22 @@
            
             </div>
             
+            <div id="dateModal" class="modal">
+            <span class="close">&times;</span>
             <form id = "dateForm" action="" method="POST" novalidate>
+                
                 <div id ="num">
                     {{ form.hidden_tag() }}
-                    <h2 style="font-size:20px; text-align: center">Select a date</h2>
+                    <h2>Select a date</h2>
                     {{form.date}} <br>
                     {{form.submit(class_="btn")}}
                    
-                    <button type="button" class="btn" onclick="closeForm()">CANCEL</button> <br>
+                    <button type="button" class="btn" id="close">CANCEL</button> <br>
                     <p hidden>{{form.id}}</p>
                 </div>
+            </div>
             </form>
+        
             <div class="col-md-3">
                 <div class="row">
                     <div class = "sid_content">
@@ -86,6 +92,7 @@
 
             function openForm(id) {
                 //id = id 
+                modal.style.display = "block";
                 document.getElementById("dateForm").style.display = "block";
                 /*document.getElementById("submit").setAttribute("id", id)*/
                 z = document.getElementById(id);
@@ -97,10 +104,31 @@
                 document.getElementById("dateForm").style.left = y
             }
 
-        
+            var modal = document.getElementById("dateModal");
+            var btn = document.getElementById("close");
+
+            btn.onclick =function() {
+                modal.style.display = "none";
+                closeForm();
+            }
+
+            // Get the <span> element that closes the modal
+            var span = document.getElementsByClassName("close")[0];
+
+            span.onclick = function() {
+                modal.style.display = "none";
+            }
+
+            // When the user clicks anywhere outside of the modal, close it
+            window.onclick = function(event) {
+                if (event.target == modal) {
+                     modal.style.display = "none";
+                }
+            }
 
         $(function () {
         $('#datepick').datetimepicker();
+
     });
 
     function createSide(card) {
@@ -126,7 +154,6 @@
             }
     }
   });
-
     </script>
     {% endblock %}
 {% endblock %}
