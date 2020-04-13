@@ -1,52 +1,114 @@
-
-
 p {
     margin-left: 10px;
+    font-family: 'Roboto', sans-serif;
 }
+
+h1 {
+    font-size: 50px;
+    font-weight: 600;
+    letter-spacing: .025px;
+    margin-bottom: 10px;
+    margin-left: 30px;
+    font-family: 'Roboto', sans-serif;
+}
+
+h2 {
+    font-size: 20px;
+    font-weight: 600;
+    letter-spacing: .015px;
+    padding-bottom: 5px;
+    font-family: 'Roboto', sans-serif;
+}
+
 .title {
     font-size: 20px;
     font-weight: 600;
     letter-spacing: .015px;
     margin-bottom: 5px;
+    font-family: 'Roboto', sans-serif;
 }
 
 .name {
     font-size: 16px;
     font-weight: 500;
-
+    font-family: 'Roboto', sans-serif;
 }
 
 .date {
     font-size: 16px;
     font-weight: 500;
+    font-family: 'Roboto', sans-serif;
 }
 
 .main_content {
-    background-color: violet;
     width: 90%;
+    top: 70;
+}
+
+.card {
+    box-shadow: 5px 5px 8px grey;
+    margin-bottom: 25px;
 }
 
 #side_content {
     position: fixed;
-    background-color: cornflowerblue;
-    bottom: 0;
+    background-color: #64b5f6;
+    /*bottom: 0; */
+    top: 100;
     right: 0;
     height: 80%;
     width: 0px;
+    padding: 12px;
     transition: 0.5s;
-    z-index: 1;
-    overflow: hidden;
+    /*z-index: 1;*/
+    overflow: auto;
+}
+
+#side_title {
+    font-size: 25px;
+    font-weight: 600;
+    letter-spacing: .015px;
+    margin-bottom: 5px;
+    font-family: 'Roboto', sans-serif;
+}
+
+#side_subtitle {
+    font-size: 20px;
+    font-weight: 450;
+    letter-spacing: .015px;
+    margin-bottom: 10px;
+    font-family: 'Roboto', sans-serif;
+}
+
+#side_description, #side_tags {
+    font-size: 15px;
+    margin-bottom: 10px;
+    font-family: 'Roboto', sans-serif;
+}
+
+#side_date, #side_header {
+    font-size: 20px;
+    font-weight: 400;
+    letter-spacing: .015px;
+    margin-bottom: 10px;
+    font-family: 'Roboto', sans-serif;
+}
+
+#side_header {
+    font-size: 20px;
+    font-weight: 400;
+    letter-spacing: .015px;
+    margin-bottom: 5px;
+    font-family: 'Roboto', sans-serif;
 }
 
 #dateForm  {
-    display: none;
-    position: absolute;
-    height: 150px;
-    width: 200px;
-    top: 50%;
-    left: 50%;
+    background-color: #fefefe;
+    margin: 15% auto; /* 15% from the top and centered */
+    padding: 20px;
+    text-align: center;
+    width: 20%; /* Could be more or less, depending on screen size */
     font-family: 'Roboto', sans-serif;
-    background-color: white;
 }
 
 .container {
@@ -60,23 +122,81 @@ p {
 
 .accept {
     background: none;
+    background-color: #64b5f6;
     border: none;
-    color: #2F80ED;
-    font-size: 22px;
-    font-weight: 500;
+    color: black;
+    border-radius: 14px;
+    font-size: 18px;
+    font-weight: 450;
+    margin-left: 8px;
+    transition-duration: 0.3s;
+}
+
+.accept:hover {
+    background: none;
+    background-color:none;
+    border: 1px solid;
+    border-color: #64b5f6;
+    color: black;
+    border-radius: 14px;
+    font-size: 18px;
+    font-weight: 450;
+    margin-left: 8px;
+    transition-duration: 0.3s;
 }
 
 .btn {
-    float: left;
-    margin: auto;
-    color: #2F80ED;
-    padding-top: 15px;
-    padding-right: 20px;
-    font-size: 16px;
-    font-weight: 500;
     background: none;
-    border:none;
-    width: 86px;
+    background-color: #64b5f6;
+    border: none;
+    color: black;
+    border-radius: 12px;
+    font-size: 15px;
+    font-weight: 450;
+    margin-top: 10px;
+    margin-right: 10px;
+    transition-duration: 0.3s;
+}
+
+.btn:hover {
+    background: none;
+    background-color:none;
+    border: 1px solid;
+    border-color: #64b5f6;
+    color: black;
+    border-radius: 12px;
+    font-size: 15px;
+    font-weight: 450;
+    margin-top: 10px;
+    margin-right: 10px;
+    transition-duration: 0.3s;
+}
+
+#close {
+    background: none;
+    background-color: #f44336;
+    border: none;
+    color: black;
+    border-radius: 12px;
+    font-size: 15px;
+    font-weight: 450;
+    margin-top: 10px;
+    margin-left: 10px;
+    transition-duration: 0.3s;
+}
+
+#close:hover {
+    background: none;
+    background-color:none;
+    border: 1px solid;
+    border-color: #f44336;
+    color: black;
+    border-radius: 12px;
+    font-size: 15px;
+    font-weight: 450;
+    margin-top: 10px;
+    margin-left: 10px;
+    transition-duration: 0.3s;
 }
 
 #num {
@@ -95,6 +215,20 @@ p {
 
 .tags {
    color: #2F80ED;
-   font-size: 20px;
-   font-weight: 500;
+   font-size: 15px;
+   font-weight: 200;
 }
+
+/* The Modal (background) */
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 1; /* Sit on top */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgb(0,0,0); /* Fallback color */
+    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+  }
