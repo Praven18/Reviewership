@@ -1,3 +1,104 @@
 #tags {
     display: none;
 }
+
+p {
+    font-family: 'Roboto', sans-serif;
+}
+
+h1 {
+    font-size: 50px;
+    font-weight: 600;
+    letter-spacing: .025px;
+    margin-bottom: 10px;
+    font-family: 'Roboto', sans-serif;
+}
+
+.col-md-8 {
+    float: left;
+    height: auto;
+    width: auto;
+}
+
+.row {
+    font-size: 20px;
+    font-weight: 600;
+    letter-spacing: .015px;
+    height: auto;
+    width: auto;
+    font-family: 'Roboto', sans-serif;
+    float: left;
+    margin-left: 1px;
+}
+
+.row2 {
+    font-size: 20px;
+    font-weight: 600;
+    letter-spacing: .015px;
+    margin-top: 20px;
+    margin-left: 0px;
+    padding-left: 0px;
+    padding-top: 0%;
+    font-family: 'Roboto', sans-serif;
+    float: left;
+    height: auto;
+    width: auto;
+}
+
+.row3 {
+    font-size: 20px;
+    font-weight: 600;
+    letter-spacing: .015px;
+    margin-top: 20px;
+    margin-left: 0px;
+    padding-left: 0px;
+    font-family: 'Roboto', sans-serif;
+    float: left;
+}
+
+.row4 {
+    font-size: 20px;
+    font-weight: 600;
+    letter-spacing: .015px;
+    margin-top: 20px;
+    margin-left: 0px;
+    padding-top: 0%;
+    padding-left: 0px;
+    font-family: 'Roboto', sans-serif;
+    float: left;
+    height: auto;
+    width: auto;
+}
+
+.tagList {
+    font-size: 20px;
+    font-weight: 450;
+    letter-spacing: .015px;
+    margin-bottom: 10px;
+    margin-top: 80px;
+    font-family: 'Roboto', sans-serif;
+    float: right;
+    margin-right: 650px;
+}
+
+#input {
+    font-size: 20px;
+    font-weight: 600;
+    letter-spacing: .015px;
+    margin-bottom: 10px;
+    font-family: 'Roboto', sans-serif;
+}
+
+#button {
+    font-family: 'Roboto', sans-serif;
+    float: right;
+    margin-left: 15px;
+}
+
+.container {
+    margin-left: 0em;
+    margin-right: 0em;
+    height: auto;
+    width: 40%;
+    float: left;
+}
