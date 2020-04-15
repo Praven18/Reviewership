@@ -115,6 +115,27 @@
   z-index: 20;
   opacity: .1;
 }
+
+.adminStuff {
+  position: fixed;
+  right: 100px;
+  width: 400px;
+}
+
+#search {
+  position: relative;
+  width:200px;
+}
+
+#name {
+  font-size: 10px;
+}
+
+#email {
+  font-size: 8px;
+  margin-bottom: 0px;
+}
+
 .chosen-value, .teamList {
   position: absolute;
   top: 50%;
@@ -126,7 +147,7 @@
   text-transform: uppercase;
   font-weight: 600;
   letter-spacing: 4px;
-  height: 4rem;
+  /*height: 4rem;*/
   font-size: 1.1rem;
   padding: 1rem;
   background-color: #fafcfd;
@@ -170,7 +191,7 @@
   background-color: #fafcfd;
   padding: 1rem;
   font-size: 1.1rem;
-  display: flex;
+  /*display: flex;*/
   align-items: center;
   cursor: pointer;
   transition: background-color 0.3s;

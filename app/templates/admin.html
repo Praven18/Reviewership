@@ -11,18 +11,39 @@
 </div>
 <div class="container">
     {% for user in users %}
-        <div class="row user" id ="{{user.id}}" onclick="openSide(this.id)">
+        <div class="row user" id ="{{user.id}}">
             <div class="col-md-12 test">
                 <div class="col-md-1">
                     <img src="{{user.profile_pic}}" class = "pic">
                 </div>
                 <div class="col-md-11">
-                    <p class=>{{user.first_name}}</p>
+                    <p class=>{{user.first_name}} {{user.last}}</p>
                 </div>
             </div>
         </div>
     {% endfor %}
 </div>
+
+<div class="adminStuff">
+    set number of required reviews by: 
+    <select id = "options">
+        <option>name</option>
+        <option>team</option>
+        <option>role</option>
+        <option>all</option>
+    </select>
+    
+    <div id = "search">
+        <input id = "searchText" class="chosen-value" type="text" value="" placeholder="Type to filter">
+        <ul class="teamList" id = "nameList">
+        </ul>
+        <button class="btn" >ADD</button>
+    </div> <br><br><br><br><br>
+    Number of reviews:
+    <input id ="numReviews" class="chosen-value" type="number">
+    <button onclick="changeNumReviews()">submit</button>
+</div>
+   
 
 <div id="side_content">
     <div class = "row">
@@ -76,6 +97,48 @@
 
 {% block script %}
 <script>
+
+    $("#searchText").bind('input', function(){
+        if(this.value.length > 2) {
+            $('#nameList').empty()
+            optionSelected = $("#options").children("option:selected").val()
+            $.get('/search', {'option': optionSelected, 'text':this.value}, function(data){
+                for(i = 0; i < Object.keys(data).length; i++) {
+                            ul = document.getElementById('nameList');
+                            li = document.createElement("li")
+                            if(optionSelected == 'name'){
+                                console.log(data[i])
+                                console.log(data[i+1])
+                                br = document.createElement("br")
+                                p = document.createElement("p")
+                                p.setAttribute("id", "name")
+                                p.appendChild(document.createTextNode(data[i])) 
+                                i++
+                                p2 = document.createElement("p")
+                                p2.setAttribute("id", "email")
+                                p2.appendChild(document.createTextNode(data[i]))
+                                li.appendChild(p)
+                                li.appendChild(p2)
+                                ul.appendChild(li);
+                                yikes()
+                               
+                            } else {
+                            li.appendChild(document.createTextNode(data[i]));
+                            ul.appendChild(li);
+                            
+                            yikes();
+                            }
+                            
+                        }
+            })
+        }
+    })
+
+
+
+
+
+    //adds a person to a team based on whats in teamForm
     function addTeam() {
         team = document.getElementById("input").value
         id = document.getElementById("side_content").firstElementChild.id
@@ -97,6 +160,7 @@
         document.getElementById('teamForm').style.display = "none"
         document.getElementById('border').style.display = "none"
         $('#teamList').empty()
+
         
     }
 
@@ -120,9 +184,9 @@
                             console.log(li)
                             ul.appendChild(li);
                             document.getElementById('teamForm').style.display = "block"
-                            messy();
+                            
                             document.getElementById("border").style.display = "block"
-                        }
+                        }messy();
                     })
                     
                 }
@@ -193,13 +257,93 @@
                 });
             });
 
+    function changeNumReviews() {
+        num = document.getElementById("numReviews").value
+        optionSelected = $("#options").children("option:selected").val()
+        text = document.getElementById("searchText").value
+        if(optionSelected!='name'){
+            $.post(('/numreviews', {number: num, option: optionSelected, value:text}))
+        } else {
+            user = document.getElementById("email").innerText
+            $.post(('/numreviews', {number: num, option: optionSelected, value:user}))
+        }
+
+    }
+
 // stuff for teamList
 function messy() {
-const inputField = document.querySelector('.chosen-value');
-const dropdown = document.querySelector('.teamList');
+const inputField = document.querySelector('#input');
+const dropdown = document.querySelector('#teamList');
 const dropdownArray = [... document.querySelectorAll('li')];
-console.log(typeof dropdownArray)
-//dropdown.classList.add('open');
+console.log('i was called----------------------')
+dropdown.classList.add('open');
+inputField.focus(); // Demo purposes only
+let valueArray = [];
+dropdownArray.forEach(item => {
+  valueArray.push(item.textContent);
+});
+
+const closeDropdown = () => {
+  dropdown.classList.remove('open');
+}
+
+inputField.addEventListener('input', () => {
+  dropdown.classList.add('open');
+  let inputValue = inputField.value.toLowerCase();
+  let valueSubstring;
+  if (inputValue.length > 0) {
+    for (let j = 0; j < valueArray.length; j++) {
+      if (!(inputValue.substring(0, inputValue.length) === valueArray[j].substring(0, inputValue.length).toLowerCase())) {
+        dropdownArray[j].classList.add('closed');
+      } else {
+        dropdownArray[j].classList.remove('closed');
+      }
+    }
+  } else {
+    for (let i = 0; i < dropdownArray.length; i++) {
+      dropdownArray[i].classList.remove('closed');
+    }
+  }
+});
+
+dropdownArray.forEach(item => {
+  item.addEventListener('click', (evt) => {
+    inputField.value = item.textContent;
+    dropdownArray.forEach(dropdown => {
+      dropdown.classList.add('closed');
+    });
+  });
+})
+
+inputField.addEventListener('focus', () => {
+   inputField.placeholder = 'Type to filter';
+   dropdown.classList.add('open');
+   dropdownArray.forEach(dropdown => {
+     dropdown.classList.remove('closed');
+   });
+});
+
+inputField.addEventListener('blur', () => {
+   inputField.placeholder = 'Select Team';
+  dropdown.classList.remove('open');
+});
+
+document.addEventListener('click', (evt) => {
+  const isDropdown = dropdown.contains(evt.target);
+  const isInput = inputField.contains(evt.target);
+  if (!isDropdown && !isInput) {
+    dropdown.classList.remove('open');
+  }
+});
+}
+//need this to go to a different thing but for some reason i cant use this function for 2 boxes...
+//i think js just finds the first one
+function yikes() {
+const inputField = document.querySelector('#searchText');
+const dropdown = document.querySelector('#nameList');
+const dropdownArray = [... document.querySelectorAll('li')];
+console.log('i was called----------------------')
+dropdown.classList.add('open');
 inputField.focus(); // Demo purposes only
 let valueArray = [];
 dropdownArray.forEach(item => {

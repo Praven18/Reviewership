@@ -11,7 +11,7 @@ from flask_login import (
     logout_user,
 )
 from sqlalchemy import or_
-from app.models import User, Review, Teams
+from app.models import User, Review, Teams, Question
 from app.forms import CreateForm, DateForm
 from app import db, login_manager
 import datetime
@@ -47,7 +47,7 @@ def index():
     if current_user.is_authenticated:
         #return (
 
-        User.addToTeam('109651862078448085401', None)
+        #User.addToTeam('109651862078448085401', None)
         return render_template('index.html')
             #"<p>Hello, {}! You're logged in! Email: {}</p>"
             #"<div><p>Google Profile Picture:</p>"
@@ -57,7 +57,7 @@ def index():
             #)
         #)
     else:
-        User.addToTeam('109651862078448085401', None)
+        #User.addToTeam('109651862078448085401', None)
         return render_template('index.html')
         #return '<a class="button" href="/login">Google Login</a>'
 
@@ -246,7 +246,7 @@ def rank():
             User.setRank(id,1)          
     elif(rank=='manager'):
         if(checked=='1'):
-            User.setRank(id,3)
+            None
         else:
             User.setRank(id,2)
     elif(rank=='admin'):
@@ -264,15 +264,21 @@ def manager():
     teamless_users = User.query.order_by(User.id).filter(User.rank < 4).filter(User.team == None)
     return render_template('manager.html', your_users=your_users, teamless_users= teamless_users)
 
-@app.route("/numReviews", methods=['GET'])
+@app.route("/numReviews", methods=['GET', 'POST'])
 def numReviews():
-    count = 0
-    id = request.args['id']
-    user = User.get(id)
-    for reviews in db.session.query(Review).filter(or_(Review.requestor == id, Review.reviewer == id)):
-        count = count + 1
-    data = {'count': count, 'num':user.num_of_reviews, 'id':id}
-    return data
+    if request.method == 'GET':
+        count = 0
+        id = request.args['id']
+        user = User.get(id)
+        for reviews in db.session.query(Review).filter(or_(Review.requestor == id, Review.reviewer == id)):
+            count = count + 1
+        data = {'count': count, 'num':user.num_of_reviews, 'id':id}
+        return data
+    else:
+        num = request.form['number']
+        option = request.form['option']
+        text = request.form['text']
+        User.setRequiredReviews(option,num.text)
 
 @app.route("/teams", methods=['GET', 'POST'])
 def teams():
@@ -300,10 +306,43 @@ def teams():
             x = x + 1
         return teams 
 
+@app.route("/search", methods=['GET'])
+def search():
+    option = request.args['option']
+    text = request.args['text']
+    text.lower()
+    data= {}
+    i = 0
+    name_list = User.search(option, text)
+    for x in name_list:
+        data[i] = str(name_list[i])
+        i = i + 1
+
+    return data
 
 @app.route("/test")
 def test():
+    x = "asd"
+    print(x[0:5])
     return render_template('test.html')
+
+@app.route("/feedback", methods=['GET','POST'])
+def feedback():
+    if request.method == 'GET':
+        questionList = Question.questionList()
+        print(questionList)
+        questions = {}
+        x = 0
+        for i in questionList:
+            questions[x] = questionList[x]
+            x = x + 1
+        return questions 
+    elif request.method == 'POST':
+        print(request.form)
+        id = request.form['id']
+        answers = request.form['answer']
+        print(id)
+        print(answers)
 
     
    
