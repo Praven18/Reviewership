@@ -57,3 +57,18 @@ p {
 #id {
     display: none;
 }
+
+.dot {
+    height: 25px;
+    width: 25px;
+    background-color: #bbb;
+    border-radius: 50%;
+    border-color: #2F80ED;
+    border-style: solid;
+    border-width: 2px;
+    display: inline-block;
+}
+
+#complete {
+    display: none;
+}

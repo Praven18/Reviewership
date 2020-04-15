@@ -65,6 +65,61 @@ class User(UserMixin, db.Model):
         user.team = team
         db.session.commit()
 
+    def search(option, text):
+        namelist = []
+        if (option=='name'):
+            users = db.session.query(User)
+            for x in users:
+                name = x.first_name.lower() + ' ' + x.last_name.lower()
+                email = x.email
+                if text in name:
+                    namelist.append(name)
+                    namelist.append(email)
+            return namelist
+        elif (option=='team'):
+            
+            team = Teams.teamList()
+            for x in team:
+                if text in x:
+                    namelist.append(teams.team)
+            return namelist
+        elif (option=='role'):
+            namelist.append('requestor')
+            namelist.append('reviewer')
+            namelist.append('manager')
+            namelist.append('admin')
+            return namelist
+    
+    def setRequiredReviews(option, num, text):
+        if option == 'name':
+            users = db.session.query(User).filter(User.email==text)
+            for x in users:
+                x.num_of_reviews = num
+            db.commit()
+        elif option == 'team':
+            users = db.session.query(User).filter(User.team==text)
+            for x in users:
+                x.num_of_reviews = num
+            db.commit()
+        elif option == 'role':
+            i = 1
+            if text == 'reviewer':
+                i =2
+            elif text == 'manager':
+                i = 3
+            elif text == 'admin':
+                i = 4
+            users = db.session.query(User).filter(User.rank == i)
+            for x in users:
+                x.num_of_reviews = num
+            db.commit()
+        elif option == 'all':
+            users = db.session.query(User)
+            for x in users:
+                x.num_of_reviews = num
+            db.commit()
+
+   
 class Review(db.Model):
     """
     Code Review Request Model
@@ -87,7 +142,7 @@ class Review(db.Model):
     tagString:         The String format of tags
     """   
 
-    id = db.Column(db.Integer, index=True, unique=True,primary_key=True)
+    id = db.Column(db.Integer, index=True, unique=True, primary_key=True)
     title = db.Column(db.String)
     description = db.Column(db.String)
     biling = db.Column(db.String)
@@ -101,6 +156,9 @@ class Review(db.Model):
     last_changed = db.Column(db.String, nullable=True)
     tags = db.relationship('reviewTags', back_populates='review')
     tagString = db.Column(db.String, nullable=True)
+    response = db.relationship('Response', back_populates='review')
+    #feedback_response = db.relationship('FeedbackResponse', back_populates='review')
+    
 
     def __repr__(self):
         return '<Review {}>'.format([self.id,self.title,self.description,self.biling,self.status,self.date,self.requestor,self.requestor_name,self.reviewer,self.reviewer_name])
@@ -130,6 +188,7 @@ class Review(db.Model):
             print('777777777777777777777777')
             print(tag.strip(','))
             tag = tag.strip(',')
+            tag.lower()
             exist = Tag.query.filter_by(tag=tag).first()
             if exist == None:
                 new_tag = Tag(tag=tag)
@@ -198,6 +257,74 @@ class Teams(db.Model):
     
     def addTeam(text):
         team = Teams()
-        team.team = text
+        team.team = text.lower()
         db.session.add(team)
         db.session.commit()
+
+class Question(db.Model):
+    """
+    list of questions to ask
+    """
+
+    id = db.Column(db.Integer, primary_key=True)
+    question = db.Column(db.String)
+    response = db.relationship('Response', back_populates='question')
+
+    def __repr__(self):
+        return '<Question {}>'.format([self.id,self.question,self.response])
+
+    def addQuestion(text):
+        question = Question()
+        question.question = text
+        db.session.add(question)
+        db.session.commit()
+
+    def questionList():
+        questions = []
+        for question in db.session.query(Question):
+            print(question.question)
+            questions.append(question.question)
+        return questions
+
+class Feedback(db.Model):
+    """
+    feedback
+    """
+    id = db.Column(db.Integer, primary_key=True)
+    type = db.Column(db.Integer)
+    feedback_response = db.relationship('FeedbackResponse',back_populates='feedback')
+
+    def __repr__(self):
+        return '<Feedback {}>'.format([self.id])
+
+
+class FeedbackResponse(db.Model):
+    """
+    hmmmm
+    """
+
+    id = db.Column(db.Integer, primary_key=True)
+    response = db.relationship('Response', back_populates='feedback_response')
+    feedback_id = db.Column(db.Integer, db.ForeignKey(Feedback.id))
+    feedback = db.relationship('Feedback', back_populates='feedback_response')
+    #review_id = db.Column(db.Integer, db.ForeignKey(Review.id), primary_key=True)
+    #review = db.relationship('Review', back_populates='feedback_response')
+
+    def __repr__(self):
+        return '<FeedbackResponse {}>'.format([self.id,self.feedback_id])
+
+
+class Response(db.Model):
+    """
+        response to question
+    """
+    feedback_response_id = db.Column(db.Integer, db.ForeignKey(FeedbackResponse.id), primary_key=True)
+    feedback_response = db.relationship('FeedbackResponse', back_populates='response')
+    question_id = db.Column(db.Integer, db.ForeignKey(Question.id), primary_key=True)
+    question = db.relationship('Question',back_populates='response')
+    review_id = db.Column(db.Integer, db.ForeignKey(Review.id), primary_key=True)
+    review = db.relationship('Review', back_populates='response')
+    answer = db.Column(db.Integer)
+
+    def __repr__(self):
+        return '<Response {}>'.format([self.feedback_response_id,self.question_id,self.review_id,self.answer])
