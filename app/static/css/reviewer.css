@@ -52,7 +52,7 @@ h2 {
 
 #side_content {
     position: fixed;
-    background-color: #64b5f6;
+    background-color: white;
     /*bottom: 0; */
     top: 100;
     right: 0;
@@ -60,8 +60,10 @@ h2 {
     width: 0px;
     padding: 12px;
     transition: 0.5s;
-    /*z-index: 1;*/
+    z-index: 1;
     overflow: auto;
+    box-shadow: 5px 5px 5px 8px grey;
+    border-radius: 10px;
 }
 
 #side_title {
@@ -121,28 +123,33 @@ h2 {
 }
 
 .accept {
-    background: none;
-    background-color: #64b5f6;
-    border: none;
+    position: absolute;
+    box-sizing: border-box;
+    appearance: none;
+    background-color: transparent;
+    border: 2px solid #2F80ED;
+    border-radius: 0.6em;
     color: black;
-    border-radius: 14px;
-    font-size: 18px;
-    font-weight: 450;
-    margin-left: 8px;
-    transition-duration: 0.3s;
+    cursor: pointer;
+    display: flex;
+    align-self: center;
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1;
+    margin: 7px;
+    padding: 1.2em 2.8em;
+    text-decoration: none;
+    text-align: center;
+    text-transform: uppercase;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 700;
+    bottom: 25px;
+    transition: box-shadow 300ms ease-in-out, color 300ms ease-in-out;
+ 
 }
 
 .accept:hover {
-    background: none;
-    background-color:none;
-    border: 1px solid;
-    border-color: #64b5f6;
-    color: black;
-    border-radius: 14px;
-    font-size: 18px;
-    font-weight: 450;
-    margin-left: 8px;
-    transition-duration: 0.3s;
+    box-shadow: 0 0 40px 40px #2F80ED inset;
 }
 
 .btn {

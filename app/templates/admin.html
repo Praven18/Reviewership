@@ -6,21 +6,25 @@
 {% endblock %}
 
 {% block content %}
-<h1>Admin</h1>
+<div id="border"></div>
 <div class="container">
-    
+    <div class="col-md-8">
     {% for user in users %}
         <div class="row user" id ="{{user.id}}">
             <div class="col-md-12 test">
                 <div class="col-md-1">
                     <img src="{{user.profile_pic}}" class = "pic">
                 </div>
-                <div class="col-md-11">
-                    <p class="userList">{{user.first_name}}</p>
+                <div class="col-md-2">
+                    <p class="userList">{{user.first_name}} {{user.last_name}}</p>
+                </div>
+                <div class="col-md-3">
+                    {{user.email}} Team: {{user.team}}
                 </div>
             </div>
         </div>
     {% endfor %}
+    </div>
 </div>
 
 <div class="adminStuff">
@@ -45,6 +49,7 @@
    
 
 <div id="side_content">
+    <h1 id ="sideName"></h1>
     <h2>Select roles for this user</h2>
     <div class = "row">
         <div class="col-md-3">
@@ -230,6 +235,11 @@
                     console.log(this.id);
                     document.getElementById("side_content").style.width = "20%";
                     document.getElementById("side_content").firstElementChild.setAttribute("id",this.id)
+                    i = $(this).find(".userList")               
+                    console.log(i)
+                    console.log(i[0])
+                    console.log(i[0].innerText)
+                    //document.getElementById('sideName').innerText = i[0].innerText
                     var x = this.id
                     $.get('/user', {id: x}, function(data){
 
