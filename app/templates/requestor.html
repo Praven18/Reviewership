@@ -9,37 +9,43 @@
 
 {% block content %}
    
-    <div class = "container"> <h1> Make a review</h1><div class= "row">
+    <div class = "container"> <h1> Request a Review</h1>
 
     <form action="" method="post" novalidate>
         <div class= col-md-8>
-            <div class = "row justify-content-center">
+            <div class = "row">
         {{ cform.hidden_tag() }}
         
             {{cform.title.label}}<br>
             {{cform.title}}
-         </div><div class=row>
+         </div> <br>
+         <div class=row2>
        
             {{cform.description.label}}<br>
             {{cform.description}}
-        </div> <div class=row>
+        </div> <br>
+        <div class=row3>
         
             {{cform.biling.label}}<br>
-            {{cform.biling}}
+            {{cform.biling}} <br>
             {{cform.tags}}
         
-           </div>
-        <p>tags</p>
+           </div> <br>
+        
+        <div class=row4>
+            <p>Tags:</p>
         <input type="text" id=input>
         <button  type = button onclick=addTag() id=button>Add Tag </button>
-       <div class=row>
-        {{ cform.create() }}</div>
+        <br>
+        {{ cform.create() }}
+    </div>
+        
     </div>
     </form>
     </div>
 
     <div class = tagList>
-        Tag list
+        Tag List:
         <ul id = 'list'>
            
         </ul>
