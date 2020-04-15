@@ -1,11 +1,11 @@
 .main-content {
     min-height: 80%;
-    background-color: lightskyblue;
+    /*background-color: lightskyblue;*/
 }
 
 .sidebar-content {
     min-height: 35%;
-    background-color: mediumslateblue;
+    /*background-color: mediumslateblue;*/
     margin-bottom: 10rem;
 }
 
@@ -71,4 +71,15 @@ p {
 
 #complete {
     display: none;
+}
+
+.content {
+    background-color: #F8F8F8;
+    overflow: auto;
+    box-shadow: 5px 5px 8px grey;
+    border-radius: 10px;
+    border-style: solid;
+    border-color: black;
+    border-width: thin;
+
 }

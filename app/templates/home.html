@@ -14,7 +14,7 @@
             <!--Nested rows within a column-->
             <div class="row">
                 <div class="col-12">
-                    <div class="sidebar-content">do something
+                    <div class="sidebar-content content">Reviews you need to accept or Propose
                         {% for review in received_reviews %}
                             <div class = "card">
                                 <p class ="title">{{review.title}}</p>
@@ -29,7 +29,7 @@
             </div>
             <div class="row">
                 <div class="col-12">
-                    <div class="sidebar-content">wait
+                    <div class="sidebar-content content">Reviews you proposed
                         {% for review in proposed_reviews %}
                         <div class = card>
                             <p class ="title">{{review.title}}</p>
@@ -44,7 +44,7 @@
             </div>
         </div> 
         <div class="col-sm-4">
-            <div class="main-content">
+            <div class="main-content content"> Reviews in progress
                 {% for review in progress_reviews %}
                 <div class = card>
                     <p class ="title">{{review.title}}</p>
