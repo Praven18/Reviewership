@@ -50,7 +50,7 @@
                     <p class ="title">{{review.title}}</p>
                     <p class ="name">{{review.requestor_name}}</p>
                     <p class ="date">{{review.date}}</p>
-                    <button type="sumbit" class="btn"  id = '{{review.id}}'> complete</button>
+                    <button type="sumbit" class="btn" onclick="makeForm(this)" id = '{{review.id}}'> complete</button>
                 </div>
                 {% endfor %}
             </div>
@@ -70,11 +70,97 @@
             {{forms.id}}
         </div>
     </form>
+
+    <div id = "feedbackForm">
+        <div id = "row">
+            <h2 id ="question"></h2>
+        </div>
+        <div id = "row">
+            <div class="dot" id ="b1"></div>
+            <div class="dot" id ="b2"></div>
+            <div class="dot" id ="b3"></div>
+            <div class="dot" id ="b4"></div>
+            <div class="dot" id ="b5"></div>
+        </div>
+    </div>
+    <button id="last" onclick="lastQuestion()">Previous</button>
+    <button id="next" onclick="nextQuestion()">Next</button>
+    <button id="complete" onclick="completeFeedback()">Complete</button>
 </div>
 
 {% block script %}
 <script>
-    
+    var questions = []
+    var answers = []
+    var count = 0
+    var id 
+    $(document).ready(function() {
+        $.get('/feedback', function(data){
+            for(i = 0; i < Object.keys(data).length; i++) {
+                questions.push(data[i])
+            }
+            console.log(questions)
+        })
+
+    })
+
+    function makeForm(data) {
+        count = 0
+        document.getElementById("feedbackForm").style.display = "block"
+        document.getElementById("question").innerText = questions[count]
+        $("#b3").css('background-color',"#2F80ED")
+        answers[count] = 3
+        id = data.id
+    }
+
+    function nextQuestion() {
+        console.log(answers)
+        console.log(count)
+        count++
+        document.getElementById("question").innerText = questions[count]
+        document.getElementById("last").style.display = "block"
+        $("#b1").css('background-color', "white")
+        $("#b2").css('background-color', "white")
+        $("#b3").css('background-color', "white")
+        $("#b4").css('background-color', "white")
+        $("#b5").css('background-color', "white")
+        
+        if (answers[count] == null) {
+            answers[count] = 3
+            $("#b3").css('background-color',"#2F80ED")
+        } else {
+            id = 'b'+ answers[count].toString()
+        $("#" + id).css('background-color', "#2F80ED")
+        }
+        console.log(questions.length)
+        if(count == (questions.length-1)) {
+            document.getElementById("next").style.display="none"
+            document.getElementById("complete").style.display="block"
+        }
+    }
+
+    function lastQuestion() {
+        console.log(answers)
+        console.log(count)
+        count--
+        document.getElementById("question").innerText = questions[count]
+        document.getElementById("complete").style.display="none"
+        document.getElementById("next").style.display = "block"
+        $("#b1").css('background-color', "white")
+        $("#b2").css('background-color', "white")
+        $("#b3").css('background-color', "white")
+        $("#b4").css('background-color', "white")
+        $("#b5").css('background-color', "white")
+        id = 'b'+ answers[count].toString()
+        $("#" + id).css('background-color', "#2F80ED")
+        if(count == 0) {
+            document.getElementById("last").style.display="none"
+        }
+    }
+
+    function completeFeedback() {
+        $.post('/feedback', {id:id,answer:JSON.stringify(answers)})
+    }
 
      function openForm(id) {
                 //id = id 
@@ -108,6 +194,19 @@
                     console.log("we here");
                 });
             });
+
+    $(".dot").click(function(){
+        $("#b1").css('background-color', "white")
+        $("#b2").css('background-color', "white")
+        $("#b3").css('background-color', "white")
+        $("#b4").css('background-color', "white")
+        $("#b5").css('background-color', "white")
+        $(this).css('background-color',"#2F80ED")
+        num = this.id
+        num = num.slice(-1)
+        x = parseInt(num)
+        answers[count] = x
+    })
 </script>
 {% endblock %}
 {% endblock %}
