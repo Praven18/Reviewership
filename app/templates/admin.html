@@ -6,10 +6,9 @@
 {% endblock %}
 
 {% block content %}
-<div id = "border">
-
-</div>
+<h1>Admin</h1>
 <div class="container">
+    
     {% for user in users %}
         <div class="row user" id ="{{user.id}}">
             <div class="col-md-12 test">
@@ -17,7 +16,7 @@
                     <img src="{{user.profile_pic}}" class = "pic">
                 </div>
                 <div class="col-md-11">
-                    <p class=>{{user.first_name}} {{user.last}}</p>
+                    <p class="userList">{{user.first_name}}</p>
                 </div>
             </div>
         </div>
@@ -46,6 +45,7 @@
    
 
 <div id="side_content">
+    <h2>Select roles for this user</h2>
     <div class = "row">
         <div class="col-md-3">
             <p>Reviewer</p>
