@@ -57,9 +57,6 @@ def index():
             #)
         #)
     else:
-        Teams.addTeam("Praven")
-        Teams.addTeam("Veluca")
-        Teams.addTeam("Wercheg")
         return render_template('index.html')
         #return '<a class="button" href="/login">Google Login</a>'
 
