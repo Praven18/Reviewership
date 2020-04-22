@@ -344,6 +344,7 @@ class FeedbackResponse(db.Model):
             review.last_changed = user
         else:
             review.status = 4
+            review.date = datetime.datetime.now()
         if (user==review.requestor):
             feedback_type = 0
         else:

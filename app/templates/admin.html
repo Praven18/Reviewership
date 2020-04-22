@@ -154,7 +154,8 @@
     function addTeam() {
         team = document.getElementById("input").value
         id = document.getElementById("side_content").firstElementChild.id
-        $.post('/teams', {data: team, id:id}, function() {
+        text = "manager"
+        $.post('/teams', {data: team, id:id, text:text}, function() {
             ul = document.getElementById('teamList');
             li = document.createElement("li")
             li.appendChild(document.createTextNode(team));

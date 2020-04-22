@@ -269,8 +269,8 @@ def rank():
 
 @app.route("/manager")
 def manager():
-   # if(current_user.rank < 3):
-    #    return render_template('stop_error.html')
+    if(current_user.rank < 3):
+        return render_template('stop_error.html')
     your_users = User.query.order_by(User.id).filter(User.rank < 4).filter(User.team == current_user.team)
     teamless_users = User.query.order_by(User.id).filter(User.rank < 4).filter(User.team == None)
     return render_template('manager.html', your_users=your_users, teamless_users= teamless_users, user=current_user)
@@ -310,6 +310,8 @@ def teams():
         else:
             User.addToTeam(request.form['id'], request.form['data'])
 
+        if request.form['text'] == "manager":
+            User.setRank(request.form['id'],3)
         return '1'
     
     if request.method == 'GET':

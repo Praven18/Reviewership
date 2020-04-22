@@ -108,7 +108,8 @@
         id = document.getElementById("side_content").firstElementChild.id
         document.getElementById("border").style.display = "block"
         document.getElementById("teamForm").style.display = "block"
-        $.post('/teams', {data: team, id:id})
+        text = ""
+        $.post('/teams', {data: team, id:id,text:text})
     }
 
     function closeForm() {
