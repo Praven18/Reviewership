@@ -210,8 +210,8 @@ def reviewer():
 
 @app.route("/admin", methods=['GET', 'POST'])
 def admin():
-    #if(current_user.rank != 4):
-        #return render_template('sorry.html')
+    if(current_user.rank != 4):
+        return render_template('sorry.html')
     users = User.query.order_by(User.id)
     return render_template('admin.html', users=users, user=current_user)
 
