@@ -10,6 +10,11 @@
 .user {
     background-color: lightcoral;
     margin-bottom: 10px;
+    border-style: solid;
+    border-width: thin;
+    border-color: grey;
+    border-radius: 10px;
+    box-shadow: 5px 5px 5px 5px grey;
 }
 
 .pic {
@@ -20,13 +25,16 @@
 
 #side_content {
     position: fixed;
-    background-color: cornflowerblue;
+    background-color: white;
     bottom: 0;
     right: 0;
     height: 80%;
     width: 0px;
     transition: 0.5s;
     z-index: 1;
+    overflow: hidden;
+    box-shadow: 5px 5px 5px 8px grey;
+    border-radius: 10px;
 }
 
 #teamForm {

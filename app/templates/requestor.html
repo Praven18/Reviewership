@@ -12,32 +12,51 @@
     <div class = "container"> <h1> Request a Review</h1>
 
     <form action="" method="post" novalidate>
-        <div class= col-md-8>
-            <div class = "row">
         {{ cform.hidden_tag() }}
-        
-            {{cform.title.label}}<br>
-            {{cform.title}}
-         </div> <br>
-         <div class=row2>
        
-            {{cform.description.label}}<br>
-            {{cform.description}}
-        </div> <br>
-        <div class=row3>
+       
+        <div class= col-md-12>
+            <div class = "row">
+                <div class=col-md-6>
+                    <div class ="wrapper">
         
-            {{cform.biling.label}}<br>
-            {{cform.biling}} <br>
-            {{cform.tags}}
-        
-           </div> <br>
-        
+                        {{cform.title.label(class="labels")}}<br>
+                        {{cform.title(class="inputs", Placeholder="Enter Title")}}
+                    </div>
+                </div>
+                <div class=col-md-6>
+                    <div class="wrapper">
+                        {{cform.biling.label(class="labels")}}<br>
+                        {{cform.biling(class="inputs", Placeholder="Title of Job")}}
+                    </div>
+                </div>
+            </div> <br>
+            <div class="row big">
+                <div class ="col-md-12">
+                    <div class="wrapper">
+                        {{cform.description.label(class="labels")}}<br>
+                        {{cform.description(class="bigBox", Placeholder="Tell us about it")}}
+                    </div>
+                </div>
+            <br>
+            <div class="row big">
+                <div class="col-md-12">
+                    <div class = "wrapper">
+                        {{cform.tags}}
+                        <label class="labels" for="input">Tags*</label>
+                        <button  type = button onclick=addTag() id=button class="btn">Add Tag </button>
+                        <input class="inputs" id=input placeholder="Add tags here">
+                        
+                    </div>
+                   
+                </div>
+            </div> <br>
+        </div>
         <div class=row4>
-            <p>Tags:</p>
-        <input type="text" id=input>
-        <button  type = button onclick=addTag() id=button>Add Tag </button>
+            
+        
         <br>
-        {{ cform.create() }}
+        {{ cform.create(class="btn") }}
     </div>
         
     </div>

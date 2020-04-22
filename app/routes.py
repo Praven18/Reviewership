@@ -11,7 +11,7 @@ from flask_login import (
     logout_user,
 )
 from sqlalchemy import or_
-from app.models import User, Review, Teams, Question
+from app.models import User, Review, Teams, Question, Feedback, FeedbackResponse
 from app.forms import CreateForm, DateForm
 from app import db, login_manager
 import datetime
@@ -57,7 +57,6 @@ def index():
             #)
         #)
     else:
-        #User.addToTeam('109651862078448085401', None)
         return render_template('index.html')
         #return '<a class="button" href="/login">Google Login</a>'
 
@@ -67,15 +66,17 @@ def home():
     if request.method== 'POST':
         id = request.form['id']
         Review.accept_review(id)
+        return redirect(url_for("app.home"))
     proposed_reviews = Review.query.order_by(Review.id).filter(Review.status==2).filter(or_(Review.requestor == current_user.id, Review.reviewer == current_user.id)).filter(Review.last_changed == current_user.id)
     received_reviews = Review.query.order_by(Review.id).filter(Review.status==2).filter(or_(Review.requestor == current_user.id, Review.reviewer == current_user.id)).filter(Review.last_changed != current_user.id)
     progress_reviews = Review.query.order_by(Review.id).filter(Review.status==3).filter(or_(Review.requestor == current_user.id, Review.reviewer == current_user.id))
+    completed_reviews = Review.query.order_by(Review.id).filter(Review.status==4).filter(or_(Review.requestor == current_user.id, Review.reviewer == current_user.id)).order_by(Review.date).limit(4)
     if forms.validate_on_submit:
         print('8888888888888888888888888888888888888888888888888')
-    user = {'first_name': current_user.first_name, 'email': current_user.email, 'profile_pic': current_user.profile_pic}
+    
   
    
-    return render_template('home.html', user=user, forms=forms,proposed_reviews=proposed_reviews, received_reviews=received_reviews, progress_reviews=progress_reviews)
+    return render_template('home.html', user=current_user, forms=forms,proposed_reviews=proposed_reviews, received_reviews=received_reviews, progress_reviews=progress_reviews, completed_reviews=completed_reviews)
 
 @app.route("/login")
 def login():
@@ -185,11 +186,12 @@ def requestor():
         print('4444444444444444')
         print(tag_list)
         Review.setTags(tag_list,review.id)
-        print('good')
+        print('333333333333333333')
+        return redirect(url_for("app.requestor"))
     else:
         print('bad')
         
-    return render_template('requestor.html', cform=cform)
+    return render_template('requestor.html', cform=cform, user=current_user)
 
 @app.route("/reviewer", methods=['GET', 'POST'])
 def reviewer():
@@ -204,14 +206,23 @@ def reviewer():
         print(form.submit)
         print('+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++')
         Review.change_status(2,form.id.data,current_user.id,User.get_name(current_user.id),form.date.data)
-    return render_template('reviewer.html', reviews=reviews, form=form, rank=current_user.rank)
+    return render_template('reviewer.html', reviews=reviews, form=form, rank=current_user.rank, user=current_user)
 
 @app.route("/admin", methods=['GET', 'POST'])
 def admin():
-    #if(current_user.rank != 4):
-        #return render_template('sorry.html')
+    if(current_user.rank != 4):
+        return render_template('sorry.html')
     users = User.query.order_by(User.id)
-    return render_template('admin.html', users=users)
+    return render_template('admin.html', users=users, user=current_user)
+
+@app.route("/adminQuestions", methods=['POST'])
+def adminQuestions():
+    if request.method=='POST':
+        question = request.form['question']
+        print(question)
+        Question.addQuestion(question)
+    return '1'   
+    
 
 @app.route("/user", methods=['GET'])
 def user():
@@ -258,14 +269,15 @@ def rank():
 
 @app.route("/manager")
 def manager():
-   # if(current_user.rank < 3):
-    #    return render_template('stop_error.html')
+    if(current_user.rank < 3):
+        return render_template('stop_error.html')
     your_users = User.query.order_by(User.id).filter(User.rank < 4).filter(User.team == current_user.team)
     teamless_users = User.query.order_by(User.id).filter(User.rank < 4).filter(User.team == None)
-    return render_template('manager.html', your_users=your_users, teamless_users= teamless_users)
+    return render_template('manager.html', your_users=your_users, teamless_users= teamless_users, user=current_user)
 
 @app.route("/numReviews", methods=['GET', 'POST'])
 def numReviews():
+    print('here')
     if request.method == 'GET':
         count = 0
         id = request.args['id']
@@ -274,11 +286,14 @@ def numReviews():
             count = count + 1
         data = {'count': count, 'num':user.num_of_reviews, 'id':id}
         return data
-    else:
+    elif request.method == 'POST':
+        print('here')
         num = request.form['number']
         option = request.form['option']
-        text = request.form['text']
-        User.setRequiredReviews(option,num.text)
+        text = request.form['value']
+        User.setRequiredReviews(option,num,text)
+        print('here')
+        return '1'
 
 @app.route("/teams", methods=['GET', 'POST'])
 def teams():
@@ -295,6 +310,8 @@ def teams():
         else:
             User.addToTeam(request.form['id'], request.form['data'])
 
+        if request.form['text'] == "manager":
+            User.setRank(request.form['id'],3)
         return '1'
     
     if request.method == 'GET':
@@ -340,11 +357,24 @@ def feedback():
     elif request.method == 'POST':
         print(request.form)
         id = request.form['id']
-        answers = request.form['answer']
+        answers = request.form['answer'].replace('[','').replace(']','').split(',')
+        questions = request.form['stuff'].replace('[','').replace(']','').split(',')
         print(id)
         print(answers)
+        print(questions)
+        Feedback.addFeedback(current_user.id, questions, answers, id)
 
-    
+@app.route("/review", methods=['GET'])
+def review():
+    id = request.args['id']
+    answerList = FeedbackResponse.review(current_user.id,id)
+    answers = {}
+    x = 0
+    for i in answerList:
+        answers[x] = answerList[x]
+        x = x + 1
+    print(answers)
+    return answers
    
 
 def get_google_provider_cfg():

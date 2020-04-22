@@ -1,7 +1,15 @@
 .container {
     /*background-color: indigo;*/
-    margin-left: 0px;
-    margin-top: 0px;
+    margin-left: 10px;
+    margin-top: 80px;
+}
+
+.user {
+  border-style: solid;
+  border-width: thin;
+  border-color: grey;
+  border-radius: 10px;
+  box-shadow: 5px 5px 5px 5px grey;
 }
 
 h1 {
@@ -47,7 +55,7 @@ p {
 
 #side_content {
   position: fixed;
-  background-color: #64b5f6;
+  background-color: white;
   top: 100;
   right: 0;
   height: 80%;
@@ -56,6 +64,8 @@ p {
   transition: 0.5s;
   z-index: 1;
   overflow: hidden;
+  box-shadow: 5px 5px 5px 8px grey;
+  border-radius: 10px;
 }
 
 .switch {
@@ -124,6 +134,34 @@ p {
   display: none;
 }
 
+.button {
+  box-sizing: border-box;
+  appearance: none;
+  background-color: transparent;
+  border: 2px solid #2F80ED;
+  border-radius: 0.6em;
+  color: black;
+  cursor: pointer;
+  display: flex;
+  align-self: center;
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1;
+  margin: 7px;
+  padding: 1.2em 2.8em;
+  text-decoration: none;
+  text-align: center;
+  text-transform: uppercase;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 700;
+  bottom: 25px;
+  transition: box-shadow 300ms ease-in-out, color 300ms ease-in-out;
+
+}
+
+.button:hover {
+  box-shadow: 0 0 40px 40px #2F80ED inset;
+}
 .btn {
   float: left;
   z-index: 25;

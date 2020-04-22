@@ -11,12 +11,15 @@
     {% for user in  your_users %}
         <div class="row user" id ="{{user.id}}" onclick="openSide(this.id)">
             <div class="col-md-12 test">
-                <div class="col-md-1">
-                    <img src="{{user.profile_pic}}" class = "pic">
-                </div>
-                <div class="col-md-11">
-                    <p class=>{{user.first_name}}</p>
-                </div>
+              <div class="col-md-1">
+                <img src="{{user.profile_pic}}" class = "pic">
+            </div>
+            <div class="col-md-2">
+                <p class="userList">{{user.first_name}} {{user.last_name}}</p>
+            </div>
+            <div class="col-md-3">
+                {{user.email}} Team: {{user.team}}
+            </div>
             </div>
         </div>
     {% endfor %}
@@ -26,12 +29,15 @@
     {% for user in  teamless_users %}
         <div class="row user" id ="{{user.id}}" onclick="openSide(this.id)">
             <div class="col-md-12 test">
-                <div class="col-md-1">
-                    <img src="{{user.profile_pic}}" class = "pic">
-                </div>
-                <div class="col-md-11">
-                    <p class=>{{user.first_name}}</p>
-                </div>
+              <div class="col-md-1">
+                <img src="{{user.profile_pic}}" class = "pic">
+            </div>
+            <div class="col-md-2">
+                <p class="userList">{{user.first_name}} {{user.last_name}}</p>
+            </div>
+            <div class="col-md-3">
+                {{user.email}} Team: {{user.team}}
+            </div>
             </div>
         </div>
     {% endfor %}
@@ -102,7 +108,8 @@
         id = document.getElementById("side_content").firstElementChild.id
         document.getElementById("border").style.display = "block"
         document.getElementById("teamForm").style.display = "block"
-        $.post('/teams', {data: team, id:id})
+        text = ""
+        $.post('/teams', {data: team, id:id,text:text})
     }
 
     function closeForm() {

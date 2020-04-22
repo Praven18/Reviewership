@@ -14,7 +14,7 @@
             <!--Nested rows within a column-->
             <div class="row">
                 <div class="col-12">
-                    <div class="sidebar-content">do something
+                    <div class="sidebar-content content">Reviews you need to accept or Propose
                         {% for review in received_reviews %}
                             <div class = "card">
                                 <p class ="title">{{review.title}}</p>
@@ -29,13 +29,12 @@
             </div>
             <div class="row">
                 <div class="col-12">
-                    <div class="sidebar-content">wait
+                    <div class="sidebar-content content">Reviews you proposed
                         {% for review in proposed_reviews %}
                         <div class = card>
                             <p class ="title">{{review.title}}</p>
                             <p class ="name">{{review.requestor_name}}</p>
                             <p class ="date">{{review.date}}</p>
-                            <button type="sumbit" class="btn"  id = '{{review.id}}'> Accept</button>
                         </div>
                     {% endfor %}
                     </div>
@@ -44,19 +43,32 @@
             </div>
         </div> 
         <div class="col-sm-4">
-            <div class="main-content">
+            <div class="main-content content"> Reviews in progress
                 {% for review in progress_reviews %}
-                <div class = card>
+                <div class = 'card'>
                     <p class ="title">{{review.title}}</p>
                     <p class ="name">{{review.requestor_name}}</p>
                     <p class ="date">{{review.date}}</p>
-                    <button type="sumbit" class="btn" onclick="makeForm(this)" id = '{{review.id}}'> complete</button>
+                    {% if review.last_changed != user.id %}
+                    <button type="sumbit" class="btn" onclick="makeForm(this.id)" id = '{{review.id}}'> complete</button>
+                    {% else %}
+                    <button id = '{{review.id}}' class='btn' onclick="reviewFeedback(this.id)">Review Feedback</button>
+                    {% endif %}
                 </div>
                 {% endfor %}
             </div>
         </div>
         <div class="col-sm-4">
-            <div class="main-content">main</div>
+            <div class="main-content content">Completed Reviews
+            {% for review in completed_reviews %}
+                <div class = "card">
+                    <p class ="title">{{review.title}}</p>
+                    <p class ="name">{{review.requestor_name}}</p>
+                    <p class ="date">Date Proposed: {{review.date}}</p>
+                    <button type="sumbit" class="btn"  id = '{{review.id}}' onclick="reviewFeedback(this.id)"> Review</button>
+                </div>
+            {% endfor %}
+            </div>
         </div>
     </div>
     <form id = "dateForm" action="" method="POST" novalidate>
@@ -71,54 +83,79 @@
         </div>
     </form>
 
+
+</div>
     <div id = "feedbackForm">
         <div id = "row">
             <h2 id ="question"></h2>
         </div>
         <div id = "row">
-            <div class="dot" id ="b1"></div>
-            <div class="dot" id ="b2"></div>
-            <div class="dot" id ="b3"></div>
-            <div class="dot" id ="b4"></div>
-            <div class="dot" id ="b5"></div>
+            1
+            <div class="dot fill" id ="b1"></div>
+            <div class="dot fill" id ="b2"></div>
+            <div class="dot fill" id ="b3"></div>
+            <div class="dot fill" id ="b4"></div>
+            <div class="dot fill" id ="b5"></div>
+            5
         </div>
-    </div>
+    
     <button id="last" onclick="lastQuestion()">Previous</button>
     <button id="next" onclick="nextQuestion()">Next</button>
     <button id="complete" onclick="completeFeedback()">Complete</button>
-</div>
-
+    </div>
 {% block script %}
 <script>
     var questions = []
+    var question_ids = []
     var answers = []
     var count = 0
     var id 
+    var review_id 
+
     $(document).ready(function() {
         $.get('/feedback', function(data){
             for(i = 0; i < Object.keys(data).length; i++) {
                 questions.push(data[i])
+                i++
+                question_ids.push(data[i])
             }
-            console.log(questions)
         })
 
     })
 
-    function makeForm(data) {
+    function makeForm(num) {
         count = 0
         document.getElementById("feedbackForm").style.display = "block"
+        document.getElementById("last").style.display="none"
         document.getElementById("question").innerText = questions[count]
         $("#b3").css('background-color',"#2F80ED")
         answers[count] = 3
-        id = data.id
+        id = num
+    }
+
+    function reviewFeedback(num) {
+        id  = num
+        $.get('/review', {id:id}, function(data){
+            questions = []
+            answers = []
+            for(i=0; i < Object.keys(data).length;i++) {
+                questions.push(data[i])
+                i++
+                answers.push(data[i])
+            }
+            
+            document.getElementById("feedbackForm").style.display  = "block"
+            document.getElementById("last").style.display="none"
+            document.getElementById("question").innerText = questions[0]
+            dot_id = 'b'+ answers[0].toString()
+            $("#" + dot_id).css('background-color', "#2F80ED")
+        })
     }
 
     function nextQuestion() {
-        console.log(answers)
-        console.log(count)
         count++
         document.getElementById("question").innerText = questions[count]
-        document.getElementById("last").style.display = "block"
+        document.getElementById("last").style.display = "inline-block"
         $("#b1").css('background-color', "white")
         $("#b2").css('background-color', "white")
         $("#b3").css('background-color', "white")
@@ -130,22 +167,19 @@
             $("#b3").css('background-color',"#2F80ED")
         } else {
             id = 'b'+ answers[count].toString()
-        $("#" + id).css('background-color', "#2F80ED")
+            $("#" + id).css('background-color', "#2F80ED")
         }
-        console.log(questions.length)
         if(count == (questions.length-1)) {
             document.getElementById("next").style.display="none"
-            document.getElementById("complete").style.display="block"
+            document.getElementById("complete").style.display="inline-block"
         }
     }
 
     function lastQuestion() {
-        console.log(answers)
-        console.log(count)
         count--
         document.getElementById("question").innerText = questions[count]
         document.getElementById("complete").style.display="none"
-        document.getElementById("next").style.display = "block"
+        document.getElementById("next").style.display = "inline-block"
         $("#b1").css('background-color', "white")
         $("#b2").css('background-color', "white")
         $("#b3").css('background-color', "white")
@@ -159,7 +193,12 @@
     }
 
     function completeFeedback() {
-        $.post('/feedback', {id:id,answer:JSON.stringify(answers)})
+        $.post('/feedback', {id:id,answer:JSON.stringify(answers),stuff:JSON.stringify(question_ids)})
+        document.getElementById("feedbackForm").style.display = "none"
+        questions = []
+        question_ids=[]
+        answers=[]
+        count = 0
     }
 
      function openForm(id) {
@@ -170,7 +209,6 @@
                 document.getElementById("id").value = id
                 var x = document.getElementById(id).parentElement.offsetTop
                 var y = document.getElementById(id).offsetLeft
-                console.log(id + ' ' + x + ' ' + y)
                 document.getElementById("dateForm").style.top = (x + 150)
                 document.getElementById("dateForm").style.left = y
     }
@@ -195,7 +233,7 @@
                 });
             });
 
-    $(".dot").click(function(){
+    $(".fill").click(function(){
         $("#b1").css('background-color', "white")
         $("#b2").css('background-color', "white")
         $("#b3").css('background-color', "white")

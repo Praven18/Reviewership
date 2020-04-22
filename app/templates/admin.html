@@ -6,24 +6,31 @@
 {% endblock %}
 
 {% block content %}
-<h1>Admin</h1>
+<div id="border"></div>
 <div class="container">
-    
+    <div class="col-md-8">
     {% for user in users %}
         <div class="row user" id ="{{user.id}}">
             <div class="col-md-12 test">
                 <div class="col-md-1">
                     <img src="{{user.profile_pic}}" class = "pic">
                 </div>
-                <div class="col-md-11">
-                    <p class="userList">{{user.first_name}}</p>
+                <div class="col-md-2">
+                    <p class="userList">{{user.first_name}} {{user.last_name}}</p>
+                </div>
+                <div class="col-md-3">
+                    {{user.email}} Team: {{user.team}}
                 </div>
             </div>
         </div>
     {% endfor %}
+    </div>
 </div>
 
 <div class="adminStuff">
+  Add question:
+  <input id = "questionText">
+  <button class="button" onclick="addQuestion()">add</button> <br>
     set number of required reviews by: 
     <select id = "options">
         <option>name</option>
@@ -36,15 +43,16 @@
         <input id = "searchText" class="chosen-value" type="text" value="" placeholder="Type to filter">
         <ul class="teamList" id = "nameList">
         </ul>
-        <button class="btn" >ADD</button>
+        <button class="btn button" >ADD</button>
     </div> <br><br><br><br><br>
     Number of reviews:
     <input id ="numReviews" class="chosen-value" type="number">
-    <button onclick="changeNumReviews()">submit</button>
+    <button class="button" onclick="changeNumReviews()">submit</button>
 </div>
    
 
 <div id="side_content">
+    <h1 id ="sideName"></h1>
     <h2>Select roles for this user</h2>
     <div class = "row">
         <div class="col-md-3">
@@ -135,14 +143,19 @@
     })
 
 
-
+    function addQuestion() {
+      text = document.getElementById("questionText").value
+      $.post("/adminQuestions", {question:text})
+      document.getElementById("questionText").value =""
+    }
 
 
     //adds a person to a team based on whats in teamForm
     function addTeam() {
         team = document.getElementById("input").value
         id = document.getElementById("side_content").firstElementChild.id
-        $.post('/teams', {data: team, id:id}, function() {
+        text = "manager"
+        $.post('/teams', {data: team, id:id, text:text}, function() {
             ul = document.getElementById('teamList');
             li = document.createElement("li")
             li.appendChild(document.createTextNode(team));
@@ -230,6 +243,11 @@
                     console.log(this.id);
                     document.getElementById("side_content").style.width = "20%";
                     document.getElementById("side_content").firstElementChild.setAttribute("id",this.id)
+                    i = $(this).find(".userList")               
+                    console.log(i)
+                    console.log(i[0])
+                    console.log(i[0].innerText)
+                    //document.getElementById('sideName').innerText = i[0].innerText
                     var x = this.id
                     $.get('/user', {id: x}, function(data){
 
@@ -262,10 +280,10 @@
         optionSelected = $("#options").children("option:selected").val()
         text = document.getElementById("searchText").value
         if(optionSelected!='name'){
-            $.post(('/numreviews', {number: num, option: optionSelected, value:text}))
+            $.post('/numReviews', {number: num, option: optionSelected, value:text})
         } else {
             user = document.getElementById("email").innerText
-            $.post(('/numreviews', {number: num, option: optionSelected, value:user}))
+            $.post("/numReviews", {number: num, option: optionSelected, value:user})
         }
 
     }

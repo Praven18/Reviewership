@@ -21,7 +21,7 @@
             <a href="{{ url_for('app.index')}}">Login</a>
             <a href="{{ url_for('app.admin')}}">Admin</a>
             <a href="{{ url_for('app.manager')}}">Manager</a>
-            <a href="{{ url_for('app.test')}}">test</a>
+            <img src="{{user.profile_pic}}" class ='profile'>
         </div>
         {% block content %}{% endblock %} 
         {% block scripts %}{% endblock %}
