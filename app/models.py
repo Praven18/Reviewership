@@ -156,7 +156,6 @@ class Review(db.Model):
     last_changed = db.Column(db.String, nullable=True)
     tags = db.relationship('reviewTags', back_populates='review')
     tagString = db.Column(db.String, nullable=True)
-    response = db.relationship('Response', back_populates='review')
     #feedback_response = db.relationship('FeedbackResponse', back_populates='review')
     
 
@@ -180,7 +179,8 @@ class Review(db.Model):
     
     def accept_review(id):
         review = Review.get(id)
-        review.status= review.status + 1
+        review.status= 3
+        review.last_changed=''
         db.session.commit()
 
     def setTags(tags, id):
@@ -206,7 +206,12 @@ class Review(db.Model):
         review = Review.get(id)
         review.tagString = text
         db.session.commit()
+
+    def getReview(id):
+        for review in db.session.query(Review).filter(Review.id==id):
+         print(type(review))
         
+        return review            
 
 class Tag(db.Model):
     """
@@ -284,34 +289,95 @@ class Question(db.Model):
         for question in db.session.query(Question):
             print(question.question)
             questions.append(question.question)
+            questions.append(question.id)
         return questions
+
+    def questionText(id):
+        question = db.session.query(Question).filter(Question.id == id).first()
+        return question.question
 
 class Feedback(db.Model):
     """
     feedback
     """
     id = db.Column(db.Integer, primary_key=True)
-    type = db.Column(db.Integer)
     feedback_response = db.relationship('FeedbackResponse',back_populates='feedback')
 
     def __repr__(self):
         return '<Feedback {}>'.format([self.id])
 
+    def addFeedback(user_id, questions, responses, review_id):
+        
+        feedback = Feedback()
+        db.session.add(feedback)
+        db.session.commit()
+        FeedbackResponse.populate(feedback.id, user_id, review_id, questions, responses)
+        db.session.commit()
+
+
 
 class FeedbackResponse(db.Model):
     """
-    hmmmm
+    hmmmm why do i need Feedback?
     """
 
     id = db.Column(db.Integer, primary_key=True)
     response = db.relationship('Response', back_populates='feedback_response')
     feedback_id = db.Column(db.Integer, db.ForeignKey(Feedback.id))
     feedback = db.relationship('Feedback', back_populates='feedback_response')
-    #review_id = db.Column(db.Integer, db.ForeignKey(Review.id), primary_key=True)
+    review_id = db.Column(db.Integer)
+    feedbackType = db.Column(db.Integer)
     #review = db.relationship('Review', back_populates='feedback_response')
 
     def __repr__(self):
-        return '<FeedbackResponse {}>'.format([self.id,self.feedback_id])
+        return '<FeedbackResponse {}>'.format([self.id,self.feedback_id, self.review_id,self.feedbackType])
+    
+    def populate(feedback_id, user, review_id, questions, responses):
+        print('44444444444444444444444444')
+        review = Review.getReview(review_id)
+        if review.last_changed=='':
+            review.last_changed = user
+        else:
+            review.status = 4
+        if (user==review.requestor):
+            feedback_type = 0
+        else:
+            feedback_type = 1
+
+        feedback_response = FeedbackResponse()
+        print(feedback_id)
+        print(type(feedback_id))
+        feedback_response.feedback_id = feedback_id
+        feedback_response.review_id = review_id
+        feedback_response.feedbackType = feedback_type
+        print(feedback_response)
+        db.session.add(feedback_response)
+        db.session.commit()
+        i = 0
+        for x in responses:
+            response = Response(feedback_response_id = feedback_response.id,question_id=questions[i], answer = x)
+            i = i + 1
+            db.session.add(response)
+        print('555555555555555555555555555555')
+
+    def review(user_id,review_id):
+        review = Review.get(review_id)
+        answers = []
+        if user_id == review.requestor:
+            feedback = db.session.query(FeedbackResponse).filter(FeedbackResponse.review_id==review_id).filter(FeedbackResponse.feedbackType==0).first()
+            for x in db.session.query(Response).filter(Response.feedback_response_id == feedback.id):
+                answers.append(Question.questionText(x.question_id))
+                answers.append(str(x.answer))
+            print(answers)
+            return answers
+        else:
+            feedback = db.session.query(FeedbackResponse).filter(FeedbackResponse.review_id==review_id).filter(FeedbackResponse.feedbackType==1).first()
+            for x in db.session.query(Response).filter(Response.feedback_response_id == feedback.id):
+                answers.append(Question.questionText(x.question_id))
+                answers.append(str(x.answer))
+            print(answers)
+            return answers
+
 
 
 class Response(db.Model):
@@ -322,8 +388,6 @@ class Response(db.Model):
     feedback_response = db.relationship('FeedbackResponse', back_populates='response')
     question_id = db.Column(db.Integer, db.ForeignKey(Question.id), primary_key=True)
     question = db.relationship('Question',back_populates='response')
-    review_id = db.Column(db.Integer, db.ForeignKey(Review.id), primary_key=True)
-    review = db.relationship('Review', back_populates='response')
     answer = db.Column(db.Integer)
 
     def __repr__(self):

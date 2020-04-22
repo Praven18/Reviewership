@@ -41,8 +41,20 @@ a:visited {
     border-radius: 13px;
     margin-bottom: 10px;
     max-width: 400px;
+    box-shadow: 5px 5px 8px grey;
+    margin-bottom: 25px;
 }
 
 * {
     font-family: 'Roboto', sans-serif;
 }
+
+.profile {
+    position: fixed;
+    top: 5px;
+    right: 20px;
+    height: 40px;
+    width: 40px;
+    border-radius: 50%;
+}
+
