@@ -91,16 +91,21 @@ class User(UserMixin, db.Model):
             return namelist
     
     def setRequiredReviews(option, num, text):
+        print(option)
+        print(num)
+        print(text)
         if option == 'name':
-            users = db.session.query(User).filter(User.email==text)
+            users = db.session.query(User).filter(User.email==text.lower())
             for x in users:
                 x.num_of_reviews = num
-            db.commit()
+                print(num)
+                print(x)
+            db.session.commit()
         elif option == 'team':
             users = db.session.query(User).filter(User.team==text)
             for x in users:
                 x.num_of_reviews = num
-            db.commit()
+            db.session.commit()
         elif option == 'role':
             i = 1
             if text == 'reviewer':
@@ -112,12 +117,12 @@ class User(UserMixin, db.Model):
             users = db.session.query(User).filter(User.rank == i)
             for x in users:
                 x.num_of_reviews = num
-            db.commit()
+            db.session.commit()
         elif option == 'all':
             users = db.session.query(User)
             for x in users:
                 x.num_of_reviews = num
-            db.commit()
+            db.seesion.commit()
 
    
 class Review(db.Model):

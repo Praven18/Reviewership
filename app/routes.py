@@ -215,10 +215,13 @@ def admin():
     users = User.query.order_by(User.id)
     return render_template('admin.html', users=users, user=current_user)
 
-@app.route("/admin/questions", methods=['POST'])
+@app.route("/adminQuestions", methods=['POST'])
 def adminQuestions():
-    question = request.form['question']
-    Question.addQuestion(question)
+    if request.method=='POST':
+        question = request.form['question']
+        print(question)
+        Question.addQuestion(question)
+    return '1'   
     
 
 @app.route("/user", methods=['GET'])
@@ -274,6 +277,7 @@ def manager():
 
 @app.route("/numReviews", methods=['GET', 'POST'])
 def numReviews():
+    print('here')
     if request.method == 'GET':
         count = 0
         id = request.args['id']
@@ -282,11 +286,14 @@ def numReviews():
             count = count + 1
         data = {'count': count, 'num':user.num_of_reviews, 'id':id}
         return data
-    else:
+    elif request.method == 'POST':
+        print('here')
         num = request.form['number']
         option = request.form['option']
-        text = request.form['text']
-        User.setRequiredReviews(option,num.text)
+        text = request.form['value']
+        User.setRequiredReviews(option,num,text)
+        print('here')
+        return '1'
 
 @app.route("/teams", methods=['GET', 'POST'])
 def teams():

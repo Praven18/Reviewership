@@ -28,6 +28,9 @@
 </div>
 
 <div class="adminStuff">
+  Add question:
+  <input id = "questionText">
+  <button class="button" onclick="addQuestion()">add</button> <br>
     set number of required reviews by: 
     <select id = "options">
         <option>name</option>
@@ -40,11 +43,11 @@
         <input id = "searchText" class="chosen-value" type="text" value="" placeholder="Type to filter">
         <ul class="teamList" id = "nameList">
         </ul>
-        <button class="btn" >ADD</button>
+        <button class="btn button" >ADD</button>
     </div> <br><br><br><br><br>
     Number of reviews:
     <input id ="numReviews" class="chosen-value" type="number">
-    <button onclick="changeNumReviews()">submit</button>
+    <button class="button" onclick="changeNumReviews()">submit</button>
 </div>
    
 
@@ -140,7 +143,11 @@
     })
 
 
-
+    function addQuestion() {
+      text = document.getElementById("questionText").value
+      $.post("/adminQuestions", {question:text})
+      document.getElementById("questionText").value =""
+    }
 
 
     //adds a person to a team based on whats in teamForm
@@ -272,10 +279,10 @@
         optionSelected = $("#options").children("option:selected").val()
         text = document.getElementById("searchText").value
         if(optionSelected!='name'){
-            $.post(('/numreviews', {number: num, option: optionSelected, value:text}))
+            $.post('/numReviews', {number: num, option: optionSelected, value:text})
         } else {
             user = document.getElementById("email").innerText
-            $.post(('/numreviews', {number: num, option: optionSelected, value:user}))
+            $.post("/numReviews", {number: num, option: optionSelected, value:user})
         }
 
     }
